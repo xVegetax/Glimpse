@@ -1,0 +1,245 @@
+/* glass.css — Glimpse design tokens & base components */
+
+:root {
+  /* ---- Translucent Liquid Glass tokens ---- */
+  --glass-shell-bg: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, 0.14) 0%,
+    rgba(255, 255, 255, 0.05) 55%,
+    rgba(255, 255, 255, 0.10) 100%
+  );
+  --glass-bar-bg: linear-gradient(
+    180deg,
+    rgba(32, 35, 42, 0.62) 0%,
+    rgba(20, 22, 28, 0.54) 55%,
+    rgba(28, 31, 38, 0.60) 100%
+  );
+  --glass-floating-solid: rgba(24, 24, 34, 0.82);
+  --glass-pill-bg: rgba(255, 255, 255, 0.12);
+  --glass-bg-hover: rgba(255, 255, 255, 0.14);
+  --glass-bg-active: rgba(255, 255, 255, 0.22);
+
+  --glass-border: rgba(255, 255, 255, 0.26);
+  --glass-border-soft: rgba(255, 255, 255, 0.14);
+  --glass-divider: rgba(255, 255, 255, 0.14);
+  --glass-highlight: rgba(255, 255, 255, 0.45);
+  --glass-inner-glow: inset 0 1px 1px rgba(255, 255, 255, 0.42),
+    inset 0 -1px 1px rgba(255, 255, 255, 0.16);
+
+  --glass-shadow: 0 5px 12px rgba(0, 0, 0, 0.18),
+    0 1px 4px rgba(0, 0, 0, 0.12);
+  --glass-shadow-sm: 0 4px 10px rgba(0, 0, 0, 0.15),
+    0 1px 3px rgba(0, 0, 0, 0.10);
+  --glass-blur: blur(28px) saturate(190%);
+
+  /* Apple Liquid Glass raised active pill */
+  --liquid-blob-bg: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.28) 0%,
+    rgba(255, 255, 255, 0.10) 55%,
+    rgba(255, 255, 255, 0.18) 100%
+  );
+  --liquid-blob-glow: inset 0 1.5px 1px rgba(255, 255, 255, 0.65),
+    inset 0 -1px 1px rgba(255, 255, 255, 0.20),
+    0 4px 14px rgba(0, 0, 0, 0.22);
+
+  --text-primary: rgba(255, 255, 255, 0.96);
+  --text-secondary: rgba(255, 255, 255, 0.68);
+  --text-on-accent: #ffffff;
+  --phone-qr-bg: #ffffff;
+
+  --accent: #0a84ff;
+  --accent-hover: #409cff;
+  --accent-soft: rgba(10, 132, 255, 0.28);
+  --accent-glow: 0 0 0 1px rgba(255, 255, 255, 0.38),
+    0 4px 16px rgba(10, 132, 255, 0.42);
+  --danger: #ff453a;
+  --success: #30d158;
+  --danger-soft: rgba(255, 69, 58, 0.22);
+
+  /* Editor canvas & selection handles */
+  --canvas-frame-bg: rgba(24, 24, 34, 0.62);
+  --canvas-frame-border: rgba(255, 255, 255, 0.32);
+  --canvas-inner-border: rgba(255, 255, 255, 0.24);
+  --canvas-shadow: 0 6px 16px rgba(0, 0, 0, 0.20),
+    0 2px 5px rgba(0, 0, 0, 0.12);
+  --checker-a: rgba(255, 255, 255, 0.06);
+  --checker-b: transparent;
+  --crop-dim: rgba(0, 0, 0, 0.52);
+  --handle-fill: #ffffff;
+  --slider-thumb-bg: #a4acb8;
+  --cursor-outline: 0 0 0 1px rgba(0, 0, 0, 0.60);
+  --cursor-drop: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.72));
+
+  /* Capture overlay (opaque, no blur: must stay fast) */
+  --overlay-bg: #000000;
+  --overlay-dim: rgba(0, 0, 0, 0.45);
+  --overlay-label-bg: rgba(20, 20, 26, 0.88);
+
+  /* Toast */
+  --toast-bg: rgba(26, 26, 36, 0.76);
+
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-xl: 34px;
+  --radius-pill: 999px;
+
+  --transition: 200ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  --spring: 420ms cubic-bezier(0.22, 1.35, 0.36, 1);
+
+  --font: "Segoe UI Variable", "Segoe UI", -apple-system, system-ui, sans-serif;
+}
+
+/* ---- Light Theme Liquid Glass tokens ---- */
+[data-theme="light"] {
+  --slider-thumb-bg: #e1e6ee;
+  --glass-shell-bg: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, 0.72) 0%,
+    rgba(242, 244, 248, 0.56) 55%,
+    rgba(255, 255, 255, 0.68) 100%
+  );
+  --glass-bar-bg: linear-gradient(
+    180deg,
+    rgba(250, 251, 255, 0.78) 0%,
+    rgba(235, 239, 246, 0.68) 100%
+  );
+  --glass-floating-solid: rgba(248, 249, 252, 0.92);
+  --glass-pill-bg: rgba(0, 0, 0, 0.06);
+  --glass-bg-hover: rgba(0, 0, 0, 0.10);
+  --glass-bg-active: rgba(0, 0, 0, 0.16);
+
+  --glass-border: rgba(255, 255, 255, 0.78);
+  --glass-border-soft: rgba(0, 0, 0, 0.10);
+  --glass-divider: rgba(0, 0, 0, 0.10);
+  --glass-highlight: rgba(255, 255, 255, 0.92);
+  --glass-inner-glow: inset 0 1px 1px rgba(255, 255, 255, 0.9),
+    inset 0 -1px 1px rgba(0, 0, 0, 0.04);
+
+  --glass-shadow: 0 6px 16px rgba(0, 0, 0, 0.12),
+    0 2px 5px rgba(0, 0, 0, 0.06);
+  --glass-shadow-sm: 0 4px 10px rgba(0, 0, 0, 0.10),
+    0 1px 3px rgba(0, 0, 0, 0.05);
+
+  --text-primary: rgba(20, 22, 28, 0.94);
+  --text-secondary: rgba(28, 32, 42, 0.64);
+
+  --canvas-frame-bg: rgba(245, 247, 252, 0.78);
+  --canvas-frame-border: rgba(255, 255, 255, 0.85);
+  --canvas-inner-border: rgba(0, 0, 0, 0.10);
+  --checker-a: rgba(0, 0, 0, 0.06);
+  --overlay-label-bg: rgba(246, 248, 252, 0.92);
+  --toast-bg: rgba(248, 249, 252, 0.90);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  height: 100%;
+  background: transparent !important;
+  color: var(--text-primary);
+  font-family: var(--font);
+  font-size: 14px;
+  user-select: none;
+  overflow: hidden;
+}
+
+/* Transparent Liquid Glass surface */
+.glass {
+  position: relative;
+  background: var(--glass-bar-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-pill);
+  box-shadow: var(--glass-shadow-sm), var(--glass-inner-glow);
+}
+.glass::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.18) 0%,
+    rgba(255, 255, 255, 0.02) 48%,
+    rgba(255, 255, 255, 0.06) 100%
+  );
+  pointer-events: none;
+}
+
+/* Pill button with liquid press bounce */
+.btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 15px;
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-pill);
+  background: var(--glass-pill-bg);
+  color: var(--text-primary);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  box-shadow: var(--glass-inner-glow);
+  transition:
+    background var(--transition),
+    transform var(--spring),
+    border-color var(--transition),
+    box-shadow var(--transition);
+}
+.btn:hover:not(:disabled) {
+  background: var(--glass-bg-hover);
+  border-color: var(--glass-highlight);
+  transform: translateY(-1px) scale(1.03);
+}
+.btn:active:not(:disabled) {
+  transform: scale(0.93, 1.05);
+  background: var(--glass-bg-active);
+}
+.btn.primary {
+  background: var(--accent);
+  border-color: var(--glass-highlight);
+  color: var(--text-on-accent);
+}
+.btn.primary:hover:not(:disabled) { background: var(--accent-hover); }
+.btn:disabled { opacity: 0.45; cursor: default; }
+
+/* Round icon button with liquid morph on click */
+.icon-btn {
+  width: 34px;
+  height: 34px;
+  display: inline-grid;
+  place-items: center;
+  border: 1px solid transparent;
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 15px;
+  cursor: pointer;
+  transition:
+    background var(--transition),
+    color var(--transition),
+    transform var(--spring),
+    box-shadow var(--transition),
+    border-color var(--transition);
+}
+.icon-btn:hover:not(:disabled) {
+  background: var(--glass-bg-hover);
+  color: var(--text-primary);
+  transform: scale(1.08);
+}
+.icon-btn:active:not(:disabled) {
+  transform: scale(0.86, 1.12);
+}
+.icon-btn.active {
+  background: var(--liquid-blob-bg);
+  color: var(--text-on-accent);
+  border-color: var(--glass-highlight);
+  box-shadow: var(--liquid-blob-glow);
+}
+.icon-btn:disabled { opacity: 0.35; cursor: default; }
+.icon-btn.close:hover { background: var(--danger); color: var(--text-on-accent); }

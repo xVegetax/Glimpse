@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="/src/styles/glass.css" />
+    <link rel="stylesheet" href="/src/overlay/overlay.css" />
+    <link rel="stylesheet" href="/src/styles/themes.css" />
+    <title>Glimpse capture</title>
+    <script type="module" src="/src/overlay/overlay.ts" defer></script>
+  </head>
+  <body class="overlay">
+    <canvas id="shot"></canvas>
+    <canvas id="mask"></canvas>
+    <div id="size-label" class="size-label hidden"></div>
+
+    <!-- Top Capture Mode Bar + Dropdown Picker for Open Windows & Monitors -->
+    <div class="overlay-top-wrap" id="overlay-top-wrap">
+      <div id="mode-bar" class="mode-bar">
+        <div id="overlay-liquid-blob" class="overlay-liquid-blob"></div>
+        <button type="button" class="mode-btn active" data-mode="rect" title="Capture rectangulaire (1)" data-i18n-title="overlay.mode.rectTitle">
+          <svg viewBox="0 0 20 20" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="14" height="12" rx="2" stroke-dasharray="3 2"/></svg>
+          <span data-i18n="overlay.mode.rect">Rectangle</span>
+        </button>
+        <button type="button" class="mode-btn" data-mode="freeform" title="Forme libre — fond transparent (2)" data-i18n-title="overlay.mode.freeformTitle">
+          <svg viewBox="0 0 20 20" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M5 14c-2-3-1-8 3-9s8 1 8 5-3 6-6 6-4-1-5-2Z"/></svg>
+          <span data-i18n="overlay.mode.freeform">Forme libre</span>
+        </button>
+        <button type="button" class="mode-btn" data-mode="window" title="Choisir une fenêtre / application ouverte (3)" data-i18n-title="overlay.mode.windowTitle">
+          <svg viewBox="0 0 20 20" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2.5" y="4" width="15" height="12" rx="2"/><line x1="2.5" y1="8" x2="17.5" y2="8"/></svg>
+          <span data-i18n="overlay.mode.window">Fenêtre</span>
+        </button>
+        <button type="button" class="mode-btn" data-mode="screen" title="Choisir l'écran à capturer (4)" data-i18n-title="overlay.mode.screenTitle">
+          <svg viewBox="0 0 20 20" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="2" y="3.5" width="16" height="11" rx="2"/><line x1="7" y1="17" x2="13" y2="17"/><line x1="10" y1="14.5" x2="10" y2="17"/></svg>
+          <span data-i18n="overlay.mode.screen">Écran</span>
+        </button>
+        <button type="button" class="mode-btn" data-mode="scroll" title="Capture défilante (5)" data-i18n-title="overlay.mode.scrollTitle">
+          <svg viewBox="0 0 20 20" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2.5" width="12" height="15" rx="2"/><path d="M10 6v8m-2.5-2.5L10 14l2.5-2.5"/></svg>
+          <span data-i18n="overlay.mode.scroll">Défilante</span>
+        </button>
+        <span class="mode-divider"></span>
+        <button type="button" class="mode-close" id="btn-cancel" title="Annuler (Échap)" data-i18n-title="overlay.cancelTitle">&#x2715;</button>
+      </div>
+
+      <!-- Picker list for Open Windows or Connected Screens -->
+      <div id="picker-panel" class="picker-panel hidden">
+        <div id="picker-title" class="picker-title" data-i18n="overlay.picker.openWindows">Applications ouvertes</div>
+        <div id="picker-list" class="picker-list"></div>
+      </div>
+    </div>
+  </body>
+</html>

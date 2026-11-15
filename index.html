@@ -1,0 +1,489 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/src/styles/glass.css" />
+    <link rel="stylesheet" href="/src/main.css" />
+    <link rel="stylesheet" href="/src/styles/themes.css" />
+    <title>Glimpse</title>
+    <script type="module" src="/src/main.ts" defer></script>
+  </head>
+  <body>
+    <!-- 1. Welcome view: Mac-style floating Liquid Glass navigation dock -->
+    <main id="welcome-view" class="dock-viewport">
+      <div class="dock-shell" data-tauri-drag-region>
+        <nav class="dock-bar" id="dock-bar" aria-label="Navigation Glimpse" data-tauri-drag-region>
+          <div class="liquid-blob" id="liquid-blob"></div>
+          <span class="drag-grip" data-tauri-drag-region title="Déplacer" data-i18n-title="common.drag">⋮⋮</span>
+
+          <button class="dock-item active" data-nav="capture" type="button">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 8V6a2 2 0 0 1 2-2h2M4 16v2a2 2 0 0 0 2 2h2m8-16h2a2 2 0 0 1 2 2v2m-4 12h2a2 2 0 0 0 2-2v-2"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
+            <span data-i18n="dock.capture">Capturer</span>
+          </button>
+
+          <button class="dock-item" data-nav="record" type="button">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="6" width="14" height="12" rx="2.5"/>
+              <path d="m16 10 6-3v10l-6-3Z"/>
+            </svg>
+            <span data-i18n="dock.video">Vidéo</span>
+          </button>
+
+          <button class="dock-item" data-nav="shortcut" type="button">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="3"/>
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9c.26.6.77 1.02 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"/>
+            </svg>
+            <span data-i18n="dock.settings">Réglages</span>
+          </button>
+
+          <button class="dock-close" id="btn-dock-close" title="Réduire dans le tray" data-i18n-title="dock.closeTray">&#x2715;</button>
+        </nav>
+      </div>
+    </main>
+
+    <!-- 2. Editor view: NO background box — top action bar, left vertical Photoshop toolbar, image + layers panel -->
+    <section id="editor-view" class="editor-view hidden">
+      <!-- Frameless window resize handles -->
+      <div class="win-resize win-resize-n" data-resize-dir="North"></div>
+      <div class="win-resize win-resize-s" data-resize-dir="South"></div>
+      <div class="win-resize win-resize-e" data-resize-dir="East"></div>
+      <div class="win-resize win-resize-w" data-resize-dir="West"></div>
+      <div class="win-resize win-resize-nw" data-resize-dir="NorthWest"></div>
+      <div class="win-resize win-resize-ne" data-resize-dir="NorthEast"></div>
+      <div class="win-resize win-resize-sw" data-resize-dir="SouthWest"></div>
+      <div class="win-resize win-resize-se" data-resize-dir="SouthEast"></div>
+      <!-- Top Action & Photo Tabs Bar -->
+      <header class="top-action-wrap">
+        <div class="bottom-capsule glass" data-tauri-drag-region>
+          <span class="drag-grip" data-tauri-drag-region title="Déplacer" data-i18n-title="common.drag">⋮⋮</span>
+          <span id="img-dimensions" class="dim-badge" data-tauri-drag-region>0 × 0</span>
+          <span class="divider"></span>
+          <div class="zoom-controls" title="Alt + Molette pour zoomer · Alt + Glisser pour déplacer" data-i18n-title="editor.zoomHelp">
+            <button type="button" class="zoom-btn" id="btn-zoom-out" title="Dézoomer (Alt + Molette bas)" data-i18n-title="editor.zoomOut">−</button>
+            <button type="button" class="zoom-label" id="btn-zoom-reset" title="Réinitialiser le zoom (100%)" data-i18n-title="editor.zoomReset">100%</button>
+            <button type="button" class="zoom-btn" id="btn-zoom-in" title="Zoomer (Alt + Molette haut)" data-i18n-title="editor.zoomIn">+</button>
+          </div>
+          <span class="divider"></span>
+          <button type="button" class="btn" id="btn-toggle-editor-tools" title="Afficher / masquer la barre d'outils Éditeur à gauche" data-i18n-title="editor.toggleTools">
+            <svg viewBox="0 0 20 20" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13.5 3.5a2.1 2.1 0 0 1 3 3L6 17l-4 1 1-4Z"/></svg>
+            <span data-i18n="dock.editor">Éditeur</span>
+          </button>
+          <button class="btn" id="btn-new-snip" title="Ctrl+Shift+S" data-i18n-title="editor.newCaptureTitle">
+            <svg viewBox="0 0 20 20" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6.5A2 2 0 0 1 5 4.5h2l1.2-1.5h3.6L13 4.5h2a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-8Z"/><circle cx="10" cy="10.5" r="2.6"/></svg>
+            <span data-i18n="editor.newCapture">Nouvelle capture</span>
+          </button>
+          <span class="divider"></span>
+          <button class="btn" id="btn-save" title="Ctrl+S" data-i18n-title="editor.saveTitle">
+            <svg viewBox="0 0 20 20" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 3v9m0 0-3-3m3 3 3-3"/><path d="M4 14v2a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1v-2"/></svg>
+            <span data-i18n="editor.save">Enregistrer…</span>
+          </button>
+          <div class="phone-split-btn">
+            <button class="btn phone-split-main" id="btn-send-phone" type="button" title="Afficher un QR code pour recevoir la photo sur le téléphone" data-i18n-title="editor.sendPhoneTitle">
+              <svg viewBox="0 0 20 20" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5.5" y="2.5" width="9" height="15" rx="2"/><line x1="9" y1="14.5" x2="11" y2="14.5"/></svg>
+              <span data-i18n="editor.sendPhone">Envoyer au téléphone</span>
+            </button>
+            <button class="btn phone-split-status" id="btn-open-phone-share" type="button" title="Afficher le partage téléphone" data-i18n-title="editor.phoneShareOpen" aria-label="Afficher le partage téléphone"><span id="phone-share-status-dot" class="phone-share-status-dot"></span><span class="phone-split-caret">▾</span></button>
+          </div>
+          <button class="btn primary" id="btn-copy" title="Ctrl+C" data-i18n-title="editor.copyTitle">
+            <svg viewBox="0 0 20 20" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="7" width="9.5" height="9.5" rx="2"/><path d="M4.5 13H4a1.5 1.5 0 0 1-1.5-1.5V4A1.5 1.5 0 0 1 4 2.5h7.5A1.5 1.5 0 0 1 13 4v.5"/></svg>
+            <span data-i18n="editor.copy">Copier</span>
+          </button>
+          <span class="divider"></span>
+          <div class="tool-group">
+            <button class="icon-btn" id="btn-back-dock" title="Retour au dock" data-i18n-title="common.backDock">
+              <svg viewBox="0 0 20 20" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 7-6 7 6"/><path d="M5 8v8h10V8"/></svg>
+            </button>
+            <button class="icon-btn" id="btn-minimize" title="Réduire" data-i18n-title="common.minimize">&#x2014;</button>
+            <button class="icon-btn" id="btn-maximize" title="Plein écran / Restaurer" data-i18n-title="common.maximize">
+              <svg viewBox="0 0 20 20" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><rect x="3.5" y="3.5" width="13" height="13" rx="2"/></svg>
+            </button>
+            <button class="icon-btn close" id="btn-close" title="Fermer" data-i18n-title="common.close">&#x2715;</button>
+          </div>
+        </div>
+      </header>
+      <aside id="phone-share-panel" class="phone-share-panel glass hidden" aria-label="Partage vers le téléphone">
+        <strong data-i18n="editor.phoneShareTitle">Scanner avec le téléphone</strong>
+        <span class="phone-share-connection"><span id="phone-share-panel-dot" class="phone-share-status-dot"></span><span id="phone-share-connection-text" data-i18n="editor.phoneShareDisconnected">Téléphone déconnecté</span></span>
+        <div id="phone-share-qr" class="phone-share-qr"></div>
+        <p data-i18n="editor.phoneShareHint">Connectez le téléphone au même Wi-Fi, puis scannez ce QR code.</p>
+        <a id="phone-share-link" target="_blank" rel="noreferrer"></a>
+        <button id="btn-phone-share-fallback" class="btn hidden" type="button" data-i18n="editor.phoneShareFallback">Le nom ne fonctionne pas ? Utiliser l’IP</button>
+        <button id="btn-hide-phone-share" class="btn" type="button" data-i18n="editor.phoneShareHide">Masquer</button>
+        <button id="btn-stop-phone-share" class="btn" type="button" data-i18n="editor.phoneShareClose">Arrêter le partage</button>
+      </aside>
+
+      <!-- Photoshop-style Multi-Photo Tabs Bar -->
+      <div class="photo-tabs-wrap">
+        <div id="photo-tabs-bar" class="photo-tabs-bar glass">
+          <div id="photo-tabs-list" class="photo-tabs-list"></div>
+          <button type="button" class="photo-tab-add" id="btn-add-photo" title="Ajouter une nouvelle photo en onglet (Ctrl+Shift+N)" data-i18n-title="editor.newPhotoTitle" data-i18n="editor.newPhoto">+ Nouvelle photo</button>
+          <button type="button" class="photo-tab-add" id="btn-add-capture" title="Ajouter une capture à côté de l'actuelle" data-i18n-title="editor.addSideTitle" data-i18n="editor.addSide">+ Ajouter à côté</button>
+          <button type="button" class="photo-tab-add hidden" id="btn-save-all" title="Enregistrer toutes les photos séparément" data-i18n-title="editor.saveAllTitle" data-i18n="editor.saveAll">Tout enregistrer</button>
+        </div>
+      </div>
+
+      <!-- Central workspace row: Left Photoshop vertical toolbar + image canvas + floating Layers panel on the right -->
+      <div class="workspace-row">
+        <aside class="toolbar-wrap hidden" id="toolbar-wrap">
+          <div class="toolbar glass vertical-toolbar" id="editor-toolbar" role="toolbar" aria-label="Outils d'annotation">
+            <div class="tool-group vertical-group">
+              <button class="icon-btn active" data-tool="select" title="Sélecteur / Déplacer (V)" data-i18n-title="tool.select">
+                <svg viewBox="0 0 20 20" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3l10 7-4.5 1.2L8.5 16 5 3z"/></svg>
+              </button>
+              <button class="icon-btn" data-tool="pen" title="Stylo (P)" data-i18n-title="tool.pen">
+                <svg viewBox="0 0 20 20" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13.5 3.5a2.1 2.1 0 0 1 3 3L6 17l-4 1 1-4Z"/></svg>
+              </button>
+              <button class="icon-btn" data-tool="highlighter" title="Surligneur (H)" data-i18n-title="tool.highlighter">
+                <svg viewBox="0 0 20 20" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m11 4 5 5-7 7H4v-5l7-7Z"/><path d="M3 17h14"/></svg>
+              </button>
+              <button class="icon-btn" data-tool="line" title="Ligne (L)" data-i18n-title="tool.line">
+                <svg viewBox="0 0 20 20" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><line x1="4" y1="16" x2="16" y2="4"/></svg>
+              </button>
+              <button class="icon-btn has-submenu" data-tool="arrow" id="btn-shape-tool" title="Flèche / Formes (A)" data-i18n-title="tool.arrow">
+                <svg viewBox="0 0 20 20" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="16" x2="16" y2="4"/><polyline points="8 4 16 4 16 12"/></svg>
+                <span class="submenu-caret"></span>
+              </button>
+              <button class="icon-btn" data-tool="text" title="Texte — cliquer pour ajouter ou modifier (T)" data-i18n-title="tool.text">
+                <svg viewBox="0 0 20 20" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 5h12M10 5v11M7 16h6"/></svg>
+              </button>
+              <button class="icon-btn" data-tool="emoji" id="btn-emoji-tool" title="Emoji — glisser un coin pour agrandir (E)" data-i18n-title="tool.emoji">
+                <svg viewBox="0 0 20 20" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="10" cy="10" r="7"/><path d="M7.5 12a3.5 3.5 0 0 0 5 0"/><circle cx="7.5" cy="8.2" r="0.8" fill="currentColor"/><circle cx="12.5" cy="8.2" r="0.8" fill="currentColor"/></svg>
+              </button>
+              <button class="icon-btn" data-tool="step" title="Pastilles numérotées 1, 2, 3… (N)" data-i18n-title="tool.step">
+                <svg viewBox="0 0 20 20" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="10" r="7"/><path d="M8.8 7.8 10.3 6.5v7"/><path d="M8.5 13.5h3.6"/></svg>
+              </button>
+              <button class="icon-btn" data-tool="blur" title="Floutage / Masquage (B)" data-i18n-title="tool.blur">
+                <svg viewBox="0 0 20 20" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="6" height="6"/><rect x="11" y="3" width="6" height="6"/><rect x="3" y="11" width="6" height="6"/><rect x="11" y="11" width="6" height="6"/></svg>
+              </button>
+              <button class="icon-btn" data-tool="eraser" title="Gomme d'annotations (G)" data-i18n-title="tool.eraser">
+                <svg viewBox="0 0 20 20" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m7 16-4-4 8-8 6 6-6 6H3"/></svg>
+              </button>
+              <button class="icon-btn" data-tool="crop" title="Recadrer (C)" data-i18n-title="tool.crop">
+                <svg viewBox="0 0 20 20" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 2v12h12"/><path d="M2 6h12v12"/></svg>
+              </button>
+            </div>
+
+            <span class="divider-h"></span>
+
+            <!-- User annotation colors -->
+            <div class="color-group vertical-colors" id="color-swatches"></div>
+            <label class="color-picker-label" title="Couleur personnalisée" data-i18n-title="color.custom">
+              <input type="color" id="color-custom" value="#ff453a" />
+            </label>
+
+            <span class="divider-h"></span>
+
+            <!-- Undo / Redo + Toggle Layers -->
+            <div class="tool-group vertical-group">
+              <button class="icon-btn" id="btn-undo" title="Annuler (Ctrl+Z)" data-i18n-title="history.undo" disabled>
+                <svg viewBox="0 0 20 20" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8h7a4 4 0 1 1 0 8H8"/><polyline points="8 5 4 8 8 11"/></svg>
+              </button>
+              <button class="icon-btn" id="btn-redo" title="Rétablir (Ctrl+Y)" data-i18n-title="history.redo" disabled>
+                <svg viewBox="0 0 20 20" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 8H8a4 4 0 1 0 0 8h4"/><polyline points="12 5 16 8 12 11"/></svg>
+              </button>
+              <button class="icon-btn" id="btn-ocr" title="Reconnaissance de texte OCR — Extraire ou masquer du texte (O)" data-i18n-title="tool.ocr">
+                <svg viewBox="0 0 20 20" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M3 6V4a1 1 0 0 1 1-1h2M3 14v2a1 1 0 0 0 1 1h2m8-14h2a1 1 0 0 1 1 1v2m-3 11h2a1 1 0 0 0 1-1v-2"/>
+                  <path d="M6.5 8h7M6.5 12h4.5"/>
+                </svg>
+              </button>
+              <button class="icon-btn active" id="btn-toggle-layers" title="Afficher / masquer les calques" data-i18n-title="editor.toggleLayers">
+                <svg viewBox="0 0 20 20" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><polygon points="10 3 2 7.5 10 12 18 7.5 10 3"/><polyline points="2 12 10 16.5 18 12"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- Contextual Size Popover directly beside the clicked tool -->
+          <div id="size-popover" class="size-popover glass hidden">
+            <div class="size-preview-wrap">
+              <span class="size-dot" id="size-dot"></span>
+            </div>
+            <input type="range" id="stroke-size" min="2" max="24" value="4" />
+            <span class="size-badge" id="size-value">4 px</span>
+            <div class="size-presets">
+              <button type="button" class="preset-pill" data-size="3">S</button>
+              <button type="button" class="preset-pill" data-size="7">M</button>
+              <button type="button" class="preset-pill" data-size="14">L</button>
+            </div>
+          </div>
+
+          <!-- Emoji picker popover -->
+          <div id="emoji-popover" class="emoji-popover glass hidden"></div>
+
+          <!-- Photoshop-style Shapes submenu popover -->
+          <div id="shape-popover" class="shape-popover glass hidden">
+            <button type="button" class="shape-opt active" data-shape="arrow" title="Flèche (A)" data-i18n-title="tool.arrow">
+              <svg viewBox="0 0 20 20" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="16" x2="16" y2="4"/><polyline points="8 4 16 4 16 12"/></svg>
+              <span data-i18n="shortcut.action.arrow">Flèche</span>
+            </button>
+            <button type="button" class="shape-opt" data-shape="rect" title="Carré / Rectangle (R)" data-i18n-title="tool.rect">
+              <svg viewBox="0 0 20 20" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><rect x="3" y="4" width="14" height="12" rx="2"/></svg>
+              <span data-i18n="shortcut.action.rect">Carré</span>
+            </button>
+            <button type="button" class="shape-opt" data-shape="circle" title="Rond / Cercle" data-i18n-title="tool.circle">
+              <svg viewBox="0 0 20 20" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="10" cy="10" r="6.5"/></svg>
+              <span data-i18n="shortcut.action.circle">Rond</span>
+            </button>
+            <button type="button" class="shape-opt" data-shape="triangle" title="Triangle" data-i18n-title="tool.triangle">
+              <svg viewBox="0 0 20 20" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><polygon points="10 3.5 17 16 3 16"/></svg>
+              <span data-i18n="shortcut.action.triangle">Triangle</span>
+            </button>
+          </div>
+        </aside>
+
+        <div id="canvas-stage" class="canvas-stage">
+          <div id="canvas-board" class="canvas-board">
+            <div id="canvas-viewport" class="canvas-viewport">
+              <div id="canvas-pan-zoom" class="canvas-pan-zoom">
+                <canvas id="base-canvas"></canvas>
+                <canvas id="annot-canvas"></canvas>
+              </div>
+              <div id="tool-cursor" class="tool-cursor hidden"></div>
+            </div>
+
+            <!-- Rich movable Text Widget with integrated Font / Color / Size bar -->
+            <div id="text-widget" class="text-widget hidden">
+              <div class="text-toolbar glass" id="text-toolbar">
+                <span class="text-drag-handle" id="text-drag-handle" title="Glisser pour déplacer le texte" data-i18n-title="textWidget.drag">⋮⋮</span>
+                <select id="text-font" class="text-font-select" title="Police du texte" data-i18n-title="textWidget.font">
+                  <option value='"Segoe UI Variable", "Segoe UI", sans-serif' data-i18n="font.modern">Moderne</option>
+                  <option value="Georgia, Cambria, serif" data-i18n="font.classic">Classique</option>
+                  <option value="Consolas, monospace" data-i18n="font.code">Code</option>
+                  <option value="Impact, sans-serif" data-i18n="font.impact">Impact</option>
+                  <option value='"Segoe Print", cursive' data-i18n="font.handwriting">Manuscrit</option>
+                </select>
+                <div class="text-color-row" id="text-color-swatches"></div>
+                <label class="color-picker-label" title="Couleur du texte" data-i18n-title="textWidget.color">
+                  <input type="color" id="text-color-custom" value="#ff453a" />
+                </label>
+                <button type="button" class="preset-pill" id="text-size-down" title="Réduire la taille" data-i18n-title="textWidget.sizeDown">−</button>
+                <span class="size-badge" id="text-size-label">24 px</span>
+                <button type="button" class="preset-pill" id="text-size-up" title="Agrandir la taille" data-i18n-title="textWidget.sizeUp">+</button>
+                <button type="button" class="preset-pill primary-pill" id="text-confirm" title="Valider (Entrée)" data-i18n-title="textWidget.confirm">✓</button>
+              </div>
+              <input id="text-input" class="inline-text" type="text" placeholder="Écrire ici…" data-i18n-placeholder="textWidget.placeholder" />
+            </div>
+          </div>
+
+          <!-- Detached side-by-side pages (Photoshop multi-tab tear-off view) -->
+          <div id="split-boards-list" class="split-boards-list hidden"></div>
+        </div>
+
+        <!-- Floating Liquid Glass OCR Panel -->
+        <aside id="ocr-panel" class="ocr-panel glass hidden" aria-label="Texte OCR">
+          <div class="ocr-header" data-tauri-drag-region>
+            <span class="ocr-title" data-tauri-drag-region>
+              <svg viewBox="0 0 20 20" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6V4a1 1 0 0 1 1-1h2M3 14v2a1 1 0 0 0 1 1h2m8-14h2a1 1 0 0 1 1 1v2m-3 11h2a1 1 0 0 0 1-1v-2"/><path d="M6.5 8h7M6.5 12h4.5"/></svg>
+              <span data-i18n="editor.ocrTitle">Texte détecté</span>
+              <span class="ocr-count" id="ocr-count">0</span>
+            </span>
+            <button type="button" class="layer-btn" id="btn-ocr-close" title="Fermer l'OCR" data-i18n-title="ocr.close">&#x2715;</button>
+          </div>
+          <div class="ocr-segment" id="ocr-segment">
+            <div class="ocr-segment-blob" id="ocr-segment-blob"></div>
+            <button type="button" class="ocr-seg-btn active" id="btn-ocr-mode-copy" title="Cliquer sur une ligne dans l'image pour la copier" data-i18n-title="ocr.copyLineTip" data-i18n="editor.ocrCopy">Copier</button>
+            <button type="button" class="ocr-seg-btn" id="btn-ocr-mode-redact" title="Cliquer sur une ligne dans l'image pour la flouter" data-i18n-title="ocr.blurLineTip" data-i18n="editor.ocrRedact">Flouter</button>
+          </div>
+          <textarea id="ocr-textarea" class="ocr-textarea" placeholder="Aucun texte détecté sur cette capture…" data-i18n-placeholder="ocr.emptyPlaceholder" spellcheck="false"></textarea>
+          <div class="ocr-footer">
+            <button type="button" class="btn primary ocr-copy-btn" id="btn-ocr-copy-all" data-i18n="editor.ocrCopyAll">Copier tout le texte</button>
+          </div>
+        </aside>
+
+        <!-- Floating Liquid Glass Layers Panel beside the edited screen -->
+        <aside id="layers-panel" class="layers-panel glass hidden" aria-label="Calques">
+          <div class="layers-header" data-tauri-drag-region>
+            <span data-i18n="editor.layers">Calques</span>
+            <span id="layers-count" class="layers-badge">0</span>
+          </div>
+          <div id="layers-list" class="layers-list">
+            <div class="layers-empty" data-i18n="editor.noAnnotation">Aucune annotation</div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- 3. Recording view: Floating Liquid Glass control capsule -->
+    <section id="recording-view" class="recording-view hidden">
+      <div class="recording-capsule glass" data-tauri-drag-region>
+        <span class="drag-grip" data-tauri-drag-region title="Déplacer" data-i18n-title="common.drag">⋮⋮</span>
+        <span class="rec-dot" id="rec-dot"></span>
+        <span class="rec-timer" id="rec-timer" data-tauri-drag-region>00:00</span>
+        <span class="divider"></span>
+        <button type="button" class="icon-btn" id="btn-rec-pause" title="Pause / Reprendre" data-i18n-title="rec.pauseResume">
+          <svg viewBox="0 0 20 20" width="15" height="15" fill="currentColor">
+            <rect x="5" y="4" width="3.5" height="12" rx="1"/>
+            <rect x="11.5" y="4" width="3.5" height="12" rx="1"/>
+          </svg>
+        </button>
+        <button type="button" class="rec-stop-btn" id="btn-rec-stop" title="Arrêter et enregistrer MP4" data-i18n-title="rec.stopTitle">
+          <span class="rec-stop-square"></span>
+          <span data-i18n="rec.stop">Stop</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- 3b. Scrolling capture capsule: Floating Liquid Glass auto-scroll controller -->
+    <section id="scrolling-view" class="recording-view hidden">
+      <div class="recording-capsule glass" data-tauri-drag-region>
+        <span class="drag-grip" data-tauri-drag-region title="Déplacer" data-i18n-title="common.drag">⋮⋮</span>
+        <span class="rec-dot"></span>
+        <span class="rec-timer" id="scroll-count-label" data-tauri-drag-region>Défilez… · 1</span>
+        <span class="divider"></span>
+        <button type="button" class="btn primary" id="btn-scroll-finish" title="Terminer et assembler" data-i18n-title="scroll.finishTitle" data-i18n="scroll.finish">✓ Terminer</button>
+        <button type="button" class="layer-btn" id="btn-scroll-cancel" title="Annuler" data-i18n-title="common.cancel">&#x2715;</button>
+      </div>
+    </section>
+
+    <!-- 4. Settings view: Floating Liquid Glass preferences -->
+    <section id="settings-view" class="settings-view hidden">
+      <div class="settings-card glass">
+        <div class="settings-header" data-tauri-drag-region>
+          <span data-tauri-drag-region data-i18n="settings.title">Réglages Glimpse</span>
+          <button type="button" class="layer-btn" id="btn-settings-back" title="Retour au dock" data-i18n-title="common.backDock">&#x2715;</button>
+        </div>
+
+        <div class="settings-row" style="flex-direction: column; align-items: stretch;">
+          <div class="settings-label">
+            <strong data-i18n="settings.uiTheme">Style de l'interface (Thème)</strong>
+          </div>
+          <div class="ui-theme-grid">
+            <button type="button" class="ui-theme-card active" data-ui-theme-choice="liquid-glass">
+              <span class="ui-theme-swatch swatch-liquid"></span>
+              <span>Liquid Glass</span>
+            </button>
+            <button type="button" class="ui-theme-card" data-ui-theme-choice="win-xp">
+              <span class="ui-theme-swatch swatch-xp"></span>
+              <span>Windows XP</span>
+            </button>
+            <button type="button" class="ui-theme-card" data-ui-theme-choice="minecraft">
+              <span class="ui-theme-swatch swatch-mc"></span>
+              <span>Minecraft</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="settings-row" id="settings-row-appearance">
+          <div class="settings-label">
+            <strong data-i18n="settings.appearance">Apparence</strong>
+          </div>
+          <div class="settings-theme-group">
+            <button type="button" class="preset-pill" data-theme-choice="dark" data-i18n="settings.theme.dark">Sombre</button>
+            <button type="button" class="preset-pill" data-theme-choice="light" data-i18n="settings.theme.light">Clair</button>
+          </div>
+        </div>
+
+        <div class="settings-row">
+          <div class="settings-label">
+            <strong data-i18n="settings.language">Langue</strong>
+          </div>
+          <div class="lang-dropdown" id="lang-dropdown">
+            <button type="button" class="preset-pill lang-trigger" id="btn-lang-menu">FR — Français ▾</button>
+            <div class="lang-menu glass hidden" id="lang-menu" role="menu">
+              <button type="button" class="lang-option active" data-lang="fr"><span>FR — Français</span><span class="lang-check">✓</span></button>
+              <button type="button" class="lang-option" data-lang="en"><span>EN — English</span><span class="lang-check">✓</span></button>
+              <button type="button" class="lang-option" data-lang="es"><span>ES — Español</span><span class="lang-check">✓</span></button>
+              <button type="button" class="lang-option" data-lang="it"><span>IT — Italiano</span><span class="lang-check">✓</span></button>
+              <button type="button" class="lang-option" data-lang="de"><span>DE — Deutsch</span><span class="lang-check">✓</span></button>
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-row">
+          <div class="settings-label">
+            <strong data-i18n="settings.opacity">Transparence</strong>
+            <span id="opacity-value-label">85%</span>
+          </div>
+          <input type="range" id="slider-opacity" class="liquid-slider" min="25" max="100" value="85" />
+        </div>
+
+        <div class="settings-row">
+          <div class="settings-label">
+            <strong data-i18n="settings.onTop">Toujours au premier plan</strong>
+            <span data-i18n="settings.onTopDesc">Garder la barre visible au-dessus des fenêtres</span>
+          </div>
+          <label class="glass-switch">
+            <input type="checkbox" id="toggle-always-on-top" checked />
+            <span class="glass-slider"></span>
+          </label>
+        </div>
+
+        <div class="settings-row">
+          <div class="settings-label">
+            <strong data-i18n="settings.autoEditor">Ouvrir l'éditeur après capture</strong>
+            <span data-i18n="settings.autoEditorDesc">Afficher les outils d'annotation directement</span>
+          </div>
+          <label class="glass-switch">
+            <input type="checkbox" id="toggle-open-editor" />
+            <span class="glass-slider"></span>
+          </label>
+        </div>
+
+        <div class="settings-row">
+          <div class="settings-label">
+            <strong data-i18n="settings.dockItems">Boutons du dock</strong>
+            <span data-i18n="settings.dockItemsDesc">Cliquer pour afficher ou masquer</span>
+          </div>
+          <div class="dock-preview-pills">
+            <button type="button" class="preset-pill dock-preview-pill active" data-dock-toggle="capture" data-i18n="dock.capture">Capturer</button>
+            <button type="button" class="preset-pill dock-preview-pill active" data-dock-toggle="record" data-i18n="dock.video">Vidéo</button>
+          </div>
+        </div>
+
+        <div class="settings-row">
+          <div class="settings-label">
+            <strong data-i18n="settings.startup">Démarrage avec Windows</strong>
+            <span data-i18n="settings.startupDesc">Lancer Glimpse en arrière-plan</span>
+          </div>
+          <label class="glass-switch">
+            <input type="checkbox" id="toggle-startup" />
+            <span class="glass-slider"></span>
+          </label>
+        </div>
+
+        <div class="settings-row">
+          <div class="settings-label">
+            <strong data-i18n="settings.videoDir">Dossier des vidéos</strong>
+            <span id="video-dir-label" class="settings-path">Vidéos\Glimpse (par défaut)</span>
+          </div>
+          <button type="button" class="preset-pill" id="btn-pick-video-dir" data-i18n="settings.choose">Choisir…</button>
+        </div>
+
+        <div class="settings-row">
+          <div class="settings-label">
+            <strong data-i18n="settings.shortcut">Raccourcis clavier</strong>
+            <span data-i18n="settings.shortcutDesc">Personnaliser tous les raccourcis de l'app</span>
+          </div>
+          <button type="button" class="preset-pill" id="btn-open-shortcuts" data-i18n="settings.shortcutsBtn">Configurer…</button>
+        </div>
+
+        <div class="settings-footer">
+          <button type="button" class="btn" id="btn-open-videos" data-i18n="settings.openVideos">Dossier Vidéos</button>
+          <button type="button" class="btn primary" id="btn-settings-done" data-i18n="settings.done">Terminé</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. Shortcuts view: Dedicated Liquid Glass window for keyboard shortcuts -->
+    <section id="shortcuts-view" class="settings-view hidden">
+      <div class="settings-card glass">
+        <div class="settings-header" data-tauri-drag-region>
+          <span data-tauri-drag-region data-i18n="settings.shortcutsTitle">Raccourcis clavier</span>
+          <button type="button" class="layer-btn" id="btn-close-shortcuts" title="Retour aux réglages" data-i18n-title="shortcuts.backSettings">&#x2715;</button>
+        </div>
+        <div id="shortcuts-list" class="shortcuts-list" style="max-height: 360px;"></div>
+        <div class="settings-footer">
+          <button type="button" class="btn" id="btn-reset-shortcuts" data-i18n="settings.shortcutsReset">Réinitialiser</button>
+          <button type="button" class="btn primary" id="btn-shortcuts-done" data-i18n="settings.done">Terminé</button>
+        </div>
+      </div>
+    </section>
+
+    <div id="toast" class="toast glass"></div>
+  </body>
+</html>

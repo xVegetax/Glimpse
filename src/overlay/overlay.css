@@ -1,0 +1,241 @@
+/* overlay.css — capture selection screen (Rectangle, Freeform, Window picker, Screen picker).
+   No blur/animation on the mask: selection must stay instant (see AGENTS.md).
+   Colors come from glass.css tokens. */
+
+body.overlay {
+  background: var(--overlay-bg);
+  cursor: crosshair;
+}
+
+#shot,
+#mask {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  display: block;
+}
+
+.size-label {
+  position: fixed;
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  background: var(--overlay-label-bg);
+  border: 1px solid var(--glass-border-soft);
+  color: var(--text-primary);
+  font-size: 12px;
+  font-weight: 500;
+  pointer-events: none;
+  white-space: nowrap;
+  z-index: 10;
+}
+
+.overlay-top-wrap {
+  position: fixed;
+  top: 22px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  z-index: 20;
+  cursor: default;
+}
+
+/* Top mode capsule with sliding Liquid Glass blob */
+.mode-bar {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 10px;
+  border-radius: var(--radius-pill);
+  background: var(--overlay-label-bg);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow-sm), var(--glass-inner-glow);
+  overflow: hidden;
+}
+
+.overlay-liquid-blob {
+  position: absolute;
+  top: 5px;
+  bottom: 5px;
+  left: 0;
+  width: 108px;
+  border-radius: var(--radius-pill);
+  background: var(--liquid-blob-bg);
+  box-shadow: var(--liquid-blob-glow);
+  pointer-events: none;
+  z-index: 0;
+  transition:
+    transform var(--spring),
+    width var(--spring),
+    border-radius var(--spring);
+}
+.overlay-liquid-blob.splashing {
+  transform: var(--blob-x, translateX(0)) scaleX(1.16) scaleY(0.86);
+}
+
+.mode-btn {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 13px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--text-secondary);
+  font: inherit;
+  font-size: 12.5px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color var(--transition), transform var(--spring);
+}
+.mode-btn:hover {
+  color: var(--text-primary);
+  transform: translateY(-1px);
+}
+.mode-btn:active {
+  transform: scale(0.90, 1.08);
+}
+.mode-btn.active {
+  color: var(--text-on-accent);
+  font-weight: 600;
+}
+
+.mode-divider {
+  width: 1px;
+  height: 18px;
+  background: var(--glass-divider);
+  margin: 0 3px;
+}
+
+.mode-close {
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 13px;
+  cursor: pointer;
+  display: inline-grid;
+  place-items: center;
+}
+.mode-close:hover {
+  background: var(--danger);
+  color: var(--text-on-accent);
+}
+
+/* Picker Panel for Open Windows & Connected Monitors */
+.picker-panel {
+  width: 380px;
+  max-height: 320px;
+  display: flex;
+  flex-direction: column;
+  padding: 10px 12px;
+  border-radius: var(--radius-lg);
+  background: var(--overlay-label-bg);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+}
+
+.picker-title {
+  padding: 2px 6px 8px;
+  border-bottom: 1px solid var(--glass-divider);
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  letter-spacing: 0.2px;
+}
+
+.picker-list {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: none;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding-top: 8px;
+}
+.picker-list::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+.picker-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 11px;
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+  background: var(--glass-pill-bg);
+  color: var(--text-primary);
+  cursor: pointer;
+}
+.picker-item:hover {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+}
+
+.picker-main {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  flex: 1;
+}
+
+.picker-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.picker-sub {
+  font-size: 11.5px;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.picker-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.picker-pill {
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--glass-border-soft);
+  background: var(--glass-pill-bg);
+  color: var(--text-primary);
+  font: inherit;
+  font-size: 11.5px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.picker-pill:hover {
+  background: var(--accent);
+  border-color: var(--glass-highlight);
+}
+.picker-pill.primary {
+  background: var(--accent);
+  border-color: var(--glass-highlight);
+}
+
+.hidden {
+  display: none !important;
+}

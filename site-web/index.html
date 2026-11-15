@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Glimpse — La capture d'écran, éditoriale et instantanée</title>
+  <meta name="description" content="Outil de capture d'écran, d'annotation vectorielle et pixel, d'OCR natif hors-ligne et d'enregistrement vidéo MP4 pour Windows." />
+  <link rel="icon" type="image/png" href="assets/favicon.png" />
+
+  <!-- Google Fonts: Inter (400, 500, 600) + Instrument Serif / Playfair Display as Perfectly Nineties Regular substitute -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&family=Playfair+Display:wght@400&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- ========================================================================
+       1. FLOATING NAV CAPSULE (Portal Component: 22px radius, #ffffff, 5px #f7f7f7 glow ring)
+       ======================================================================== -->
+  <header class="nav-wrapper">
+    <nav class="nav-capsule" id="floating-nav" aria-label="Navigation principale">
+      <a href="#top" class="brand-lockup">
+        <img src="assets/favicon.png" alt="Glimpse" width="34" height="34" style="border-radius: 50%; display: block;" />
+        <span class="brand-wordmark">Glimpse</span>
+      </a>
+
+      <div class="nav-links">
+        <a href="#capture" class="nav-link" data-i18n="nav_capture">Capture</a>
+        <a href="#editor" class="nav-link" data-i18n="nav_editor">Éditeur</a>
+        <a href="#themes" class="nav-link" data-i18n="nav_themes">Thèmes</a>
+        <a href="#mobile" class="nav-link" data-i18n="nav_mobile">Mobile</a>
+        <a href="#shortcuts" class="nav-link" data-i18n="nav_shortcuts">Raccourcis</a>
+      </div>
+
+      <div class="nav-actions">
+        <div class="lang-dropdown" id="lang-dropdown">
+          <button type="button" class="lang-pill" id="lang-toggle" aria-haspopup="true" aria-expanded="false">
+            <span id="lang-current-label">FR</span> ▾
+          </button>
+          <div class="lang-menu" id="lang-menu" role="menu">
+            <button type="button" class="lang-option active" data-lang="fr" role="menuitem">FR — Français</button>
+            <button type="button" class="lang-option" data-lang="en" role="menuitem">EN — English</button>
+          </div>
+        </div>
+        <a href="#download" class="btn-signal-sm" data-i18n="nav_cta">Télécharger</a>
+      </div>
+    </nav>
+  </header>
+
+  <!-- ========================================================================
+       2. HERO ATMOSPHERE (Full-bleed Dusk Sunset Gradient + Device Mockup + Horizon Silhouette)
+       ======================================================================== -->
+  <section class="hero-section" id="top">
+    <div class="hero-atmosphere-stars" id="hero-stars"></div>
+
+    <!-- Editorial Hero Plaque on #ffffff surface (strictly keeps #000000 & #3e3e3e on white per Portal Do's & Don'ts) -->
+    <div class="hero-editorial-card" id="hero-plaque">
+      <span class="status-badge active">
+        <span class="status-dot"></span>
+        <span data-i18n="hero_badge">Glimpse 1.0 · Tauri v2 + Rust · Windows 10 &amp; 11</span>
+      </span>
+
+      <h1 class="display-title" data-i18n="hero_title">
+        La capture d'écran, élevée au rang d'objet éditorial.
+      </h1>
+
+      <p class="hero-lead" data-i18n="hero_subtitle">
+        Un dock flottant imperceptible, cinq modes de capture instantanés, un studio d'annotation vectoriel et pixel, l'OCR natif hors-ligne et le transfert mobile par QR Code local.
+      </p>
+
+      <div style="display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap;">
+        <a href="#download" class="btn-signal-pill">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          <span data-i18n="hero_cta_primary">Télécharger pour Windows (.exe)</span>
+        </a>
+        <a href="https://github.com/xVegetax/Glimpse" target="_blank" rel="noopener" class="btn-ghost-pill">
+          <span data-i18n="hero_cta_secondary">Explorer le code sur GitHub</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Hero Pill Action Strip over the gradient -->
+    <div class="hero-cta-row" id="hero-pills">
+      <button type="button" class="btn-hero-pill" data-scroll-to="#capture">
+        <span data-i18n="pill_modes">5 Modes de Capture &amp; Vidéo 60 FPS</span>
+      </button>
+      <button type="button" class="btn-hero-pill" data-scroll-to="#themes">
+        <span data-i18n="pill_themes">Liquid Glass · Windows XP · Minecraft</span>
+      </button>
+    </div>
+
+    <!-- Device Mockup Card overlapping into the sunset horizon silhouette -->
+    <div class="device-mockup-card" id="hero-mockup">
+      <div class="device-mockup-screen">
+
+        <!-- Glimpse Top Bar & Multi-Capture Tab Bar (faithful to Liquid Glass Editor) -->
+        <div class="glimpse-editor-header">
+          <div class="glimpse-ui-topbar">
+            <div class="glimpse-ui-tabs">
+              <span class="status-badge">1802 × 1141</span>
+              <span class="ui-zoom-pill">− &nbsp; 100% &nbsp; +</span>
+              <span class="ui-tab-pill active-blue" data-i18n="mockup_editor_btn">✎ Éditeur</span>
+              <span class="ui-tab-pill" data-i18n="mockup_new_cap">⊡ Nouvelle capture</span>
+              <span class="ui-tab-pill" data-i18n="mockup_save">↓ Enregistrer...</span>
+              <span class="ui-tab-pill">
+                <span data-i18n="mockup_phone_btn">📱 Envoyer au téléphone</span>
+                <span class="status-dot-red" aria-hidden="true"></span>
+              </span>
+              <span class="ui-tab-pill active-blue" data-i18n="mockup_copy">❐ Copier</span>
+            </div>
+
+            <div class="glimpse-window-controls" aria-hidden="true">
+              <span class="win-ctrl">⌂</span>
+              <span class="win-ctrl">─</span>
+              <span class="win-ctrl">□</span>
+              <span class="win-ctrl">✕</span>
+            </div>
+          </div>
+
+          <!-- Centered Multi-Capture Tabs Capsule -->
+          <div class="glimpse-subtabs-pill">
+            <span class="ui-tab-pill active-blue">Capture 1 &nbsp;×</span>
+            <span class="ui-tab-pill" data-i18n="mockup_new_photo">+ Nouvelle photo</span>
+            <span class="ui-tab-pill" data-i18n="mockup_split">+ Ajouter à côté</span>
+          </div>
+        </div>
+
+        <!-- Glimpse 3-Column Editor Workspace Reconstruction -->
+        <div class="glimpse-ui-workspace">
+
+          <!-- Left 2-Column Tool Rail + Color Swatches (faithful to screenshot) -->
+          <div class="glimpse-tool-rail" aria-label="Outils d'annotation">
+            <div class="tool-slot" data-tool="select" title="Sélecteur (V)">↖</div>
+            <div class="tool-slot" data-tool="pen" title="Pinceau (P)">✎</div>
+            <div class="tool-slot active" data-tool="highlighter" title="Surligneur (H)">🖍</div>
+            <div class="tool-slot" data-tool="line" title="Ligne (L)">╱</div>
+            <div class="tool-slot" data-tool="arrow" title="Flèche (A)">↗</div>
+            <div class="tool-slot" data-tool="text" title="Texte riche (T)">T</div>
+            <div class="tool-slot" data-tool="shapes" title="Formes (R)">☺</div>
+            <div class="tool-slot" data-tool="badge" title="Pastilles numérotées (N)">①</div>
+            <div class="tool-slot" data-tool="blur" title="Floutage & Mosaïque (B)">▦</div>
+            <div class="tool-slot" data-tool="eraser" title="Gomme (G)">◫</div>
+            <div class="tool-slot" data-tool="crop" title="Recadrer (C)">⌗</div>
+            <div class="tool-slot" style="visibility:hidden;"></div>
+
+            <div class="tool-rail-divider"></div>
+
+            <!-- 8 Color Swatches -->
+            <span class="color-swatch active" style="background:#ef4444;" title="Rouge"></span>
+            <span class="color-swatch" style="background:#f59e0b;" title="Orange"></span>
+            <span class="color-swatch" style="background:#facc15;" title="Jaune"></span>
+            <span class="color-swatch" style="background:#22c55e;" title="Vert"></span>
+            <span class="color-swatch" style="background:#007aff;" title="Bleu"></span>
+            <span class="color-swatch" style="background:#a855f7;" title="Violet"></span>
+            <span class="color-swatch" style="background:#ffffff; border:1px solid rgba(0,0,0,0.15);" title="Blanc"></span>
+            <span class="color-swatch" style="background:#171717;" title="Noir"></span>
+
+            <div class="tool-rail-divider"></div>
+
+            <div class="tool-slot" data-tool="undo" title="Annuler (Ctrl+Z)">↶</div>
+            <div class="tool-slot" data-tool="redo" title="Rétablir (Ctrl+Y)">↷</div>
+            <div class="tool-slot" data-tool="ocr" title="OCR Natif (O)">⌕</div>
+            <div class="tool-slot active" data-tool="layers" title="Calques">⧉</div>
+          </div>
+
+          <!-- Center Live Canvas Preview -->
+          <div class="glimpse-canvas-stage">
+            <div class="canvas-selection-frame" id="gsap-selection-box">
+              <span class="selection-dimensions-pill">680 × 320 px · Ratio 16:9</span>
+
+              <div class="canvas-project-grid" id="mockup-cards-grid">
+                <div class="project-card">
+                  <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <span class="project-card-title" data-i18n="card_1_title">Architecture Tauri v2</span>
+                    <span class="status-badge active">Rust</span>
+                  </div>
+                  <p class="project-card-meta" data-i18n="card_1_meta">Capture GDI sans latence, superposition multi-écrans et consommation mémoire minimale.</p>
+                </div>
+
+                <div class="project-card">
+                  <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <span class="project-card-title" data-i18n="card_2_title">Moteur Vectoriel &amp; Pixel</span>
+                    <span class="status-badge">60 FPS</span>
+                  </div>
+                  <p class="project-card-meta" data-i18n="card_2_meta">Redimensionnement par poignées aux 4 coins, flèche calibrée au pixel et floutage confidentiel.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="annotation-callout-pill" id="gsap-annotation-pill">
+              <span class="step-badge-num" id="annotation-pill-num">1</span>
+              <span id="annotation-pill-text" data-i18n="mockup_annotation_note">Surligneur translucide · Passage fluide sur le texte sans masquer le fond</span>
+            </div>
+          </div>
+
+          <!-- Right Inspector: Layers + Native Windows OCR -->
+          <div class="glimpse-inspector-rail">
+            <div class="project-card">
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <span class="project-card-title" data-i18n="layers_title">Calques actifs</span>
+                <span class="status-badge active">4</span>
+              </div>
+              <p class="project-card-meta" data-i18n="layer_1">① Pastille numérotée #1</p>
+              <p class="project-card-meta" data-i18n="layer_2">↗ Flèche directionnelle</p>
+              <p class="project-card-meta" data-i18n="layer_3">▦ Zone floutée (RGPD)</p>
+            </div>
+
+            <div class="project-card">
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <span class="project-card-title" data-i18n="ocr_title">OCR Windows</span>
+                <span class="status-badge">Hors-ligne</span>
+              </div>
+              <p class="project-card-meta" data-i18n="ocr_desc">Texte détecté prêt à être copié en un clic via Windows.Media.Ocr.</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Landscape Horizon & Pine Tree Silhouettes along the bottom 15-20% of the Hero -->
+    <svg class="hero-horizon-silhouette" viewBox="0 0 1440 190" preserveAspectRatio="none" aria-hidden="true">
+      <!-- Distant twilight ridge -->
+      <path fill="rgba(26, 24, 41, 0.35)" d="M0,120 C240,75 420,140 720,98 C1020,56 1220,115 1440,82 L1440,190 L0,190 Z" />
+      <!-- Midground forested ridge -->
+      <path fill="rgba(18, 17, 30, 0.65)" d="M0,142 C310,112 540,158 890,118 C1140,92 1320,134 1440,118 L1440,190 L0,190 Z" />
+      <!-- Foreground silhouette horizon blending cleanly into #f7f7f7 canvas edge -->
+      <path fill="#14141f" d="M0,158 L45,152 L55,132 L65,153 L95,148 L110,122 L124,149 L180,154 L195,128 L208,154 L290,158 L305,134 L318,158 L420,162 L760,164 L1120,158 L1135,130 L1148,157 L1240,152 L1256,118 L1272,152 L1340,155 L1355,126 L1370,155 L1440,158 L1440,190 L0,190 Z" />
+    </svg>
+  </section>
+
+  <!-- ========================================================================
+       3. EDITORIAL CONTENT CANVAS (#f7f7f7 Base Surface, Single-Column Narrative + Mockup Cards)
+       ======================================================================== -->
+  <main class="canvas-main">
+
+    <!-- SECTION A: 5 Capture Modes & 60 FPS Video -->
+    <article class="editorial-block gsap-reveal" id="capture">
+      <div class="editorial-eyebrow">
+        <span class="status-badge active" data-i18n="sec1_badge">01 · Précision de capture</span>
+      </div>
+      <h2 class="editorial-h2" data-i18n="sec1_title">
+        Cinq façons de saisir l'instant, de la région au flux vidéo 60 FPS.
+      </h2>
+      <p class="editorial-p" data-i18n="sec1_p1">
+        Chaque capture commence par un geste net. Que vous découpiez un composant d'interface au pixel près grâce à la loupe intégrée, que vous verrouilliez automatiquement une fenêtre Windows sous votre curseur ou que vous détouriez une silhouette au lasso à main levée, Glimpse répond instantanément.
+      </p>
+      <p class="editorial-p" data-i18n="sec1_p2">
+        Besoin de montrer un mouvement ? Basculez sur l'enregistreur vidéo MP4 intégré : choisissez entre 30 et 60 images par seconde, sélectionnez votre source audio et activez le suivi fluide du curseur sans quitter votre barre d'accueil.
+      </p>
+    </article>
+
+    <!-- Interactive Capture Modes Device Card -->
+    <section class="showcase-card-frame gsap-reveal" aria-label="Aperçu interactif des modes de capture">
+      <div class="mode-pills-bar" role="tablist">
+        <button type="button" class="mode-pill-btn active" data-mode="rect" data-i18n="mode_rect">Rectangle</button>
+        <button type="button" class="mode-pill-btn" data-mode="win" data-i18n="mode_win">Fenêtre intelligente</button>
+        <button type="button" class="mode-pill-btn" data-mode="lasso" data-i18n="mode_lasso">Lasso libre</button>
+        <button type="button" class="mode-pill-btn" data-mode="full" data-i18n="mode_full">Plein écran</button>
+        <button type="button" class="mode-pill-btn" data-mode="video" data-i18n="mode_video">Vidéo MP4 (30/60 FPS)</button>
+      </div>
+
+      <div class="mode-stage-screen" id="mode-stage-content">
+        <span class="status-badge active" id="mode-stage-badge">Loupe ×4 · Dimensions en direct</span>
+        <h3 class="project-card-title" id="mode-stage-heading" style="font-size: 18px;">Sélection rectangulaire au pixel près</h3>
+        <p class="editorial-p" id="mode-stage-desc" style="max-width: 540px; margin-bottom: 0;">
+          Tracez une zone avec aperçu des coordonnées en temps réel, ajustez les poignées avant validation ou copiez immédiatement dans le presse-papiers.
+        </p>
+      </div>
+    </section>
+
+    <!-- SECTION B: Vector & Pixel Studio + Multi-Tab Split View -->
+    <article class="editorial-block gsap-reveal" id="editor">
+      <div class="editorial-eyebrow">
+        <span class="status-badge active" data-i18n="sec2_badge">02 · Studio d'annotation &amp; Multi-captures</span>
+      </div>
+      <h2 class="editorial-h2" data-i18n="sec2_title">
+        Un atelier vectoriel et pixel pensé pour comparer, masquer et expliquer.
+      </h2>
+      <p class="editorial-p" data-i18n="sec2_p1">
+        La barre d'outils verticale sur deux colonnes garde chaque instrument à portée de main sans jamais défiler : flèches à pointe calibrée, rectangles, cercles et triangles redimensionnables par leurs quatre coins, texte riche avec six typographies dédiées, pastilles numérotées auto-incrémentées et baguette magique de détourage.
+      </p>
+      <p class="editorial-p" data-i18n="sec2_p2">
+        Ouvrez plusieurs captures dans des onglets dédiés, renommez-les d'un double-clic sans déclencher de raccourcis parasites, ou affichez deux captures côte à côte en mode Split View 50/50 pour documenter un avant/après en un clin d'œil.
+      </p>
+    </article>
+
+    <!-- SECTION C: Three Signature Themes -->
+    <article class="editorial-block gsap-reveal" id="themes">
+      <div class="editorial-eyebrow">
+        <span class="status-badge active" data-i18n="sec3_badge">03 · Trois identités visuelles</span>
+      </div>
+      <h2 class="editorial-h2" data-i18n="sec3_title">
+        Du verre dépoli contemporain aux icônes nostalgiques de Windows XP et Minecraft.
+      </h2>
+      <p class="editorial-p" data-i18n="sec3_p1">
+        Parce qu'un outil quotidien doit s'accorder à votre humeur, Glimpse transforme intégralement son dock, son éditeur, ses sous-menus et ses animations selon trois thèmes complets : Liquid Glass (Clair et Sombre), Windows XP Luna et Minecraft GUI.
+      </p>
+    </article>
+
+    <!-- Interactive Theme Switcher Frame (Single Ambient Stage + Segmented Selector) -->
+    <section class="showcase-card-frame gsap-reveal" aria-label="Sélecteur de thème interactif">
+      <div class="theme-stage-canvas" id="theme-stage-canvas" data-skin-stage="liquid-glass">
+        <!-- Top metadata row inside stage -->
+        <div class="theme-stage-topbar">
+          <span class="status-badge active" id="skin-indicator-pill">Liquid Glass · Clair &amp; Sombre</span>
+          <span class="theme-stage-spec" id="skin-spec-pill" data-i18n="skin_spec_glass">Verre dépoli · Contours 1px · Courbes élastiques</span>
+        </div>
+
+        <!-- The single hero Dock image floating inside its matching atmosphere -->
+        <div class="theme-dock-pedestal" id="interactive-theme-dock">
+          <img
+            src="assets/dock-liquid-glass.png"
+            alt="Dock Glimpse — Thème Liquid Glass"
+            class="active-dock-img"
+            id="active-skin-dock-img"
+          />
+        </div>
+
+        <!-- Description inside clean bottom bar -->
+        <p class="theme-stage-caption" id="skin-caption-text">
+          Translucidité subtile, contours spéculaires d'un pixel et animations élastiques inspirées des interfaces natives modernes.
+        </p>
+      </div>
+
+      <!-- Clean 3-column selector cards (NO duplicate dock images) -->
+      <div class="theme-selector-rail" role="tablist">
+        <button type="button" class="theme-selector-card active" data-skin-card="liquid-glass">
+          <div class="theme-selector-head">
+            <span class="theme-swatch-dot swatch-glass"></span>
+            <span class="project-card-title" style="font-size: 15px;">Liquid Glass</span>
+            <span class="status-badge active" data-i18n="badge_default">Défaut</span>
+          </div>
+          <span class="project-card-meta" data-i18n="card_desc_glass">Verre translucide moderne, mode clair et sombre</span>
+        </button>
+
+        <button type="button" class="theme-selector-card" data-skin-card="win-xp">
+          <div class="theme-selector-head">
+            <span class="theme-swatch-dot swatch-xp"></span>
+            <span class="project-card-title" style="font-size: 15px;">Windows XP</span>
+            <span class="status-badge">Luna</span>
+          </div>
+          <span class="project-card-meta" data-i18n="card_desc_xp">Barre bleue iconique et bouton vert démarrer</span>
+        </button>
+
+        <button type="button" class="theme-selector-card" data-skin-card="minecraft">
+          <div class="theme-selector-head">
+            <span class="theme-swatch-dot swatch-mc"></span>
+            <span class="project-card-title" style="font-size: 15px;">Minecraft GUI</span>
+            <span class="status-badge">Pixel</span>
+          </div>
+          <span class="project-card-meta" data-i18n="card_desc_mc">Inventaire en pierre ciselée et accent émeraude</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- SECTION D: Local Mobile QR Share & Native Offline OCR -->
+    <article class="editorial-block gsap-reveal" id="mobile">
+      <div class="editorial-eyebrow">
+        <span class="status-badge active" data-i18n="sec4_badge">04 · Partage Mobile Local &amp; OCR Hors-ligne</span>
+      </div>
+      <h2 class="editorial-h2" data-i18n="sec4_title">
+        De votre écran PC à votre téléphone en deux secondes, sans aucun cloud.
+      </h2>
+      <p class="editorial-p" data-i18n="sec4_p1">
+        Un clic sur Envoyer au téléphone démarre un serveur HTTP local éphémère sur votre réseau Wi-Fi. Scannez le QR Code généré pour parcourir et enregistrer vos captures en pleine résolution dans votre pellicule mobile — avec indicateur de connexion en direct intégré au bouton.
+      </p>
+    </article>
+
+    <section class="showcase-card-frame gsap-reveal" aria-label="Partage mobile par QR Code">
+      <div class="qr-split-layout">
+        <div class="qr-box-card">
+          <!-- Clean Minimal Architectural QR SVG -->
+          <svg width="124" height="124" viewBox="0 0 120 120" fill="none" aria-hidden="true">
+            <rect x="6" y="6" width="34" height="34" rx="6" stroke="#000000" stroke-width="6"/>
+            <rect x="17" y="17" width="12" height="12" rx="2" fill="#007aff"/>
+            <rect x="80" y="6" width="34" height="34" rx="6" stroke="#000000" stroke-width="6"/>
+            <rect x="91" y="17" width="12" height="12" rx="2" fill="#000000"/>
+            <rect x="6" y="80" width="34" height="34" rx="6" stroke="#000000" stroke-width="6"/>
+            <rect x="17" y="91" width="12" height="12" rx="2" fill="#000000"/>
+            <rect x="52" y="14" width="14" height="14" rx="3" fill="#000000"/>
+            <rect x="52" y="46" width="22" height="22" rx="4" fill="#007aff"/>
+            <rect x="16" y="52" width="20" height="12" rx="3" fill="#000000"/>
+            <rect x="84" y="54" width="24" height="14" rx="3" fill="#000000"/>
+            <rect x="52" y="84" width="16" height="26" rx="3" fill="#000000"/>
+            <rect x="82" y="82" width="28" height="28" rx="6" fill="#007aff"/>
+          </svg>
+          <span class="status-badge active">http://192.168.1.42:7878</span>
+        </div>
+
+        <div>
+          <span class="status-badge active" style="margin-bottom: 10px;" data-i18n="qr_badge">Zéro serveur externe · 100 % Réseau local</span>
+          <h3 class="project-card-title" style="font-size: 18px; margin-bottom: 8px;" data-i18n="qr_title">Galerie mobile plein écran instantanée</h3>
+          <p class="editorial-p" style="margin-bottom: 0;" data-i18n="qr_desc">
+            Chaque nouvelle capture envoyée apparaît instantanément sur votre téléphone avec téléchargement direct en pleine qualité et fermeture propre de la session en un clic.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION E: Keyboard Shortcuts -->
+    <article class="editorial-block gsap-reveal" id="shortcuts">
+      <div class="editorial-eyebrow">
+        <span class="status-badge active" data-i18n="sec5_badge">05 · Pensé pour le clavier</span>
+      </div>
+      <h2 class="editorial-h2" data-i18n="sec5_title">
+        Chaque action possède son raccourci dédié, entièrement personnalisable.
+      </h2>
+      <p class="editorial-p" data-i18n="sec5_p1">
+        Remplacez la capture actuelle ou ajoutez un nouvel onglet photo à la volée. Lorsque vous saisissez du texte sur le canevas ou renommez un onglet de capture, la détection des raccourcis se met automatiquement en pause pour ne jamais interrompre votre frappe.
+      </p>
+
+      <div class="shortcuts-stack">
+        <div class="shortcut-row-card">
+          <div>
+            <div class="project-card-title" data-i18n="sc_new_cap">Nouvelle capture</div>
+            <div class="project-card-meta" data-i18n="sc_new_cap_sub">Lance une nouvelle sélection et remplace le canevas actif</div>
+          </div>
+          <span class="kbd-pill">Ctrl + Shift + S</span>
+        </div>
+
+        <div class="shortcut-row-card">
+          <div>
+            <div class="project-card-title" data-i18n="sc_new_photo">+ Nouvelle photo (Onglet)</div>
+            <div class="project-card-meta" data-i18n="sc_new_photo_sub">Prend une capture et l'ajoute dans un nouvel onglet sans fermer les précédentes</div>
+          </div>
+          <span class="kbd-pill">Ctrl + Shift + N</span>
+        </div>
+
+        <div class="shortcut-row-card">
+          <div>
+            <div class="project-card-title" data-i18n="sc_copy_save">Copier / Enregistrer l'image annotée</div>
+            <div class="project-card-meta" data-i18n="sc_copy_save_sub">Presse-papiers instantané ou export PNG, JPEG et WebP</div>
+          </div>
+          <span class="kbd-pill">Ctrl + C / Ctrl + S</span>
+        </div>
+
+        <div class="shortcut-row-card">
+          <div>
+            <div class="project-card-title" data-i18n="sc_tools">Outils rapides de l'éditeur</div>
+            <div class="project-card-meta" data-i18n="sc_tools_sub">Sélecteur (V), Pinceau (P), Flèche (A), Rectangle (R), Texte (T), Floutage (B), OCR (O)</div>
+          </div>
+          <span class="kbd-pill">V · P · A · R · T · B · O</span>
+        </div>
+      </div>
+    </article>
+
+    <!-- SECTION F: Closing Download Card -->
+    <section class="closing-cta-card gsap-reveal" id="download">
+      <span class="status-badge active" style="margin-bottom: 16px;" data-i18n="dl_badge">Disponible en 5 langues · FR · EN · ES · DE · RU</span>
+      <h2 class="editorial-h2" data-i18n="dl_title">
+        Adoptez Glimpse sur votre bureau Windows.
+      </h2>
+      <p class="editorial-p" style="max-width: 520px; margin: 0 auto 24px auto;" data-i18n="dl_desc">
+        Installeur natif ultra-léger (.exe NSIS &amp; .msi), démarrage automatique optionnel avec Windows et code source intégralement ouvert sous licence MIT.
+      </p>
+      <div style="display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap;">
+        <a href="https://github.com/xVegetax/Glimpse/releases" class="btn-signal-pill">
+          <span data-i18n="dl_btn_main">Télécharger Glimpse v1.0.0 (.exe)</span>
+        </a>
+        <a href="https://github.com/xVegetax/Glimpse" target="_blank" rel="noopener" class="btn-ghost-pill">
+          <span data-i18n="dl_btn_gh">Voir le dépôt GitHub</span>
+        </a>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ========================================================================
+       4. FOOTER
+       ======================================================================== -->
+  <footer class="site-footer">
+    <div class="brand-lockup">
+      <img src="assets/favicon.png" alt="Glimpse" width="28" height="28" style="border-radius: 50%; display: block;" />
+      <span class="brand-wordmark">Glimpse</span>
+    </div>
+
+    <p class="footer-meta" data-i18n="footer_copy">
+      Conçu avec Tauri v2, Rust &amp; TypeScript · Licence MIT
+    </p>
+  </footer>
+
+  <!-- GSAP 3 + ScrollTrigger CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

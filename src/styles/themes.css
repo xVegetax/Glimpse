@@ -1,0 +1,839 @@
+/* ==========================================================================
+   themes.css — Complete UI Theme Overhaul System
+   Themes:
+   1. liquid-glass (default Apple visionOS / macOS frosted glass)
+   2. win-xp       (Windows XP "Luna" Royal Blue & Classic #ECE9D8 3D bevels)
+   3. minecraft    (Minecraft 16-bit Stone Inventory & Hotbar GUI)
+   ========================================================================== */
+
+/* Compact Settings Card so no scrolling or bottom gap ever occurs */
+.settings-view {
+  align-items: flex-start !important;
+}
+
+#settings-view .settings-card {
+  height: fit-content !important;
+  max-height: none !important;
+  overflow-y: visible !important;
+  gap: 9px !important;
+  padding: 13px 16px !important;
+}
+
+.settings-header {
+  padding-bottom: 6px !important;
+}
+
+/* Hide Appearance (Dark/Light) row in Windows XP and Minecraft themes */
+html[data-ui-theme="win-xp"] #settings-row-appearance,
+html[data-ui-theme="minecraft"] #settings-row-appearance {
+  display: none !important;
+}
+
+/* ---- Theme Selector Cards in Settings ---- */
+.ui-theme-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 7px;
+  width: 100%;
+  margin-top: 4px;
+}
+
+.ui-theme-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 5px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.07);
+  color: var(--text-primary);
+  cursor: pointer;
+  font: 600 11px/1.15 inherit;
+  transition: transform 0.14s ease, border-color 0.14s ease, background 0.14s ease;
+}
+
+.ui-theme-card:hover {
+  transform: translateY(-1px);
+  background: rgba(255, 255, 255, 0.13);
+}
+
+.ui-theme-card.active {
+  border-color: var(--accent, #0a84ff);
+  box-shadow: 0 0 0 2px rgba(10, 132, 255, 0.35);
+  background: rgba(10, 132, 255, 0.18);
+}
+
+.ui-theme-swatch {
+  width: 100%;
+  height: 20px;
+  border-radius: 5px;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.24);
+}
+
+.ui-theme-swatch.swatch-liquid {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.38), rgba(10, 132, 255, 0.5));
+}
+
+.ui-theme-swatch.swatch-xp {
+  background: linear-gradient(180deg, #0058e6 0%, #2786ff 44%, #ece9d8 45%, #ece9d8 100%);
+  border-color: #003c74;
+}
+
+.ui-theme-swatch.swatch-xp::after {
+  content: "";
+  position: absolute;
+  left: 3px;
+  top: 2px;
+  width: 16px;
+  height: 6px;
+  border-radius: 2px;
+  background: linear-gradient(180deg, #56c83a, #3c9e26);
+}
+
+.ui-theme-swatch.swatch-mc {
+  border-radius: 0;
+  background: #8b8b8b;
+  border: 2px solid #000;
+  box-shadow: inset -2px -2px 0 #373737, inset 2px 2px 0 #fff;
+}
+
+.ui-theme-swatch.swatch-mc::after {
+  content: "";
+  position: absolute;
+  right: 4px;
+  top: 3px;
+  width: 10px;
+  height: 10px;
+  background: #17dd62;
+  border: 1px solid #000;
+}
+
+/* ==========================================================================
+   THEME 2: WINDOWS XP ("LUNA")
+   ========================================================================== */
+html[data-ui-theme="win-xp"] {
+  --accent: #0055ea;
+  --accent-hover: #2575ff;
+  --danger: #e04343;
+  --success: #3c9e26;
+  --radius-pill: 4px;
+  --radius-lg: 6px;
+  --radius-md: 4px;
+  --radius-sm: 3px;
+  --text-primary: #111111;
+  --text-secondary: #444444;
+  --transition: 110ms linear;
+  --spring: 120ms ease-out;
+  font-family: Tahoma, "Trebuchet MS", "Segoe UI", sans-serif !important;
+}
+
+/* ---- Windows XP Authentic Animations (No Liquid Jelly, Tactile 1px 3D Press & Crisp Roll-Down) ---- */
+@keyframes xpDialogOpen {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes xpStartPulse {
+  0%, 100% { filter: brightness(1); }
+  50% { filter: brightness(1.09); }
+}
+
+html[data-ui-theme="win-xp"] .toolbar-wrap,
+html[data-ui-theme="win-xp"] .settings-card,
+html[data-ui-theme="win-xp"] .layers-panel,
+html[data-ui-theme="win-xp"] .phone-share-panel,
+html[data-ui-theme="win-xp"] .lang-menu,
+html[data-ui-theme="win-xp"] .emoji-popover,
+html[data-ui-theme="win-xp"] .shape-popover,
+html[data-ui-theme="win-xp"] .size-popover,
+html[data-ui-theme="win-xp"] .text-toolbar,
+html[data-ui-theme="win-xp"] .ocr-panel,
+html[data-ui-theme="win-xp"] .picker-panel {
+  animation: xpDialogOpen 130ms ease-out !important;
+}
+
+/* Disable Liquid Glass specular sweep in XP */
+html[data-ui-theme="win-xp"] .settings-view .btn::after,
+html[data-ui-theme="win-xp"] .settings-view .preset-pill::after,
+html[data-ui-theme="win-xp"] .glass::before {
+  display: none !important;
+}
+
+/* XP buttons never stretch or bounce on hover — they glow warm amber and press 1px down-right on click */
+html[data-ui-theme="win-xp"] .btn,
+html[data-ui-theme="win-xp"] .tool-btn,
+html[data-ui-theme="win-xp"] .icon-btn,
+html[data-ui-theme="win-xp"] .layer-btn,
+html[data-ui-theme="win-xp"] .zoom-btn,
+html[data-ui-theme="win-xp"] .zoom-label,
+html[data-ui-theme="win-xp"] .preset-pill,
+html[data-ui-theme="win-xp"] .photo-tab,
+html[data-ui-theme="win-xp"] .photo-tab-add,
+html[data-ui-theme="win-xp"] .mode-btn,
+html[data-ui-theme="win-xp"] .dock-item,
+html[data-ui-theme="win-xp"] .dock-close,
+html[data-ui-theme="win-xp"] .ui-theme-card {
+  transition: background 100ms linear, border-color 100ms linear, box-shadow 100ms linear, filter 100ms linear !important;
+}
+
+html[data-ui-theme="win-xp"] .btn:hover:not(:disabled),
+html[data-ui-theme="win-xp"] .tool-btn:hover:not(:disabled),
+html[data-ui-theme="win-xp"] .icon-btn:hover:not(:disabled),
+html[data-ui-theme="win-xp"] .layer-btn:hover:not(:disabled),
+html[data-ui-theme="win-xp"] .zoom-btn:hover:not(:disabled),
+html[data-ui-theme="win-xp"] .preset-pill:hover:not(:disabled),
+html[data-ui-theme="win-xp"] .mode-btn:hover:not(:disabled),
+html[data-ui-theme="win-xp"] .dock-item:hover:not(:disabled),
+html[data-ui-theme="win-xp"] .dock-close:hover:not(:disabled),
+html[data-ui-theme="win-xp"] .ui-theme-card:hover:not(:disabled) {
+  transform: none !important;
+}
+
+/* Classic Windows XP 1px sunken bevel press on :active */
+html[data-ui-theme="win-xp"] .btn:active:not(:disabled),
+html[data-ui-theme="win-xp"] .tool-btn:active:not(:disabled),
+html[data-ui-theme="win-xp"] .icon-btn:active:not(:disabled),
+html[data-ui-theme="win-xp"] .layer-btn:active:not(:disabled),
+html[data-ui-theme="win-xp"] .zoom-btn:active:not(:disabled),
+html[data-ui-theme="win-xp"] .preset-pill:active:not(:disabled),
+html[data-ui-theme="win-xp"] .mode-btn:active:not(:disabled),
+html[data-ui-theme="win-xp"] .dock-item:active:not(:disabled),
+html[data-ui-theme="win-xp"] .dock-close:active:not(:disabled) {
+  transform: translate(1px, 1px) !important;
+  box-shadow: inset 1px 1px 2px rgba(0, 0, 0, 0.35) !important;
+}
+
+html[data-ui-theme="win-xp"] .dock-item[data-nav="capture"] {
+  animation: xpStartPulse 3s ease-in-out infinite;
+}
+
+html[data-ui-theme="win-xp"] .settings-view .glass-switch input:active + .glass-slider::before,
+html[data-ui-theme="win-xp"] .settings-view .glass-switch input:checked:active + .glass-slider::before {
+  transform: translateX(0) !important;
+}
+html[data-ui-theme="win-xp"] .settings-view .glass-switch input:checked:active + .glass-slider::before {
+  transform: translateX(18px) !important;
+}
+
+html[data-ui-theme="win-xp"] body {
+  font-family: Tahoma, "Trebuchet MS", "Segoe UI", sans-serif !important;
+  color: #111111;
+}
+
+/* Hide Liquid Glass animated blobs in XP mode */
+html[data-ui-theme="win-xp"] .liquid-blob,
+html[data-ui-theme="win-xp"] .overlay-liquid-blob {
+  display: none !important;
+}
+
+/* XP Taskbar-style Welcome Dock */
+html[data-ui-theme="win-xp"] .dock-bar {
+  background: linear-gradient(180deg, #3168d5 0%, #1941a5 12%, #2257d6 88%, #15388f 100%) !important;
+  border: 2px solid #082972 !important;
+  border-radius: 6px !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55), 0 4px 12px rgba(0, 0, 0, 0.35) !important;
+  backdrop-filter: none !important;
+}
+
+html[data-ui-theme="win-xp"] .dock-bar .drag-grip {
+  color: #ffffff !important;
+}
+
+html[data-ui-theme="win-xp"] .dock-item {
+  border-radius: 4px !important;
+  color: #ffffff !important;
+  background: linear-gradient(180deg, #3c7ff8 0%, #245edb 100%) !important;
+  border: 1px solid #103b99 !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4) !important;
+  font-weight: 700 !important;
+}
+
+/* Iconic Green "Start" Capture button on XP Dock */
+html[data-ui-theme="win-xp"] .dock-item[data-nav="capture"] {
+  background: linear-gradient(180deg, #65d846 0%, #3c9e26 55%, #2d821a 100%) !important;
+  border: 1px solid #1e5f10 !important;
+  font-style: italic;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.55);
+}
+
+html[data-ui-theme="win-xp"] .dock-item:hover,
+html[data-ui-theme="win-xp"] .dock-item.active {
+  filter: brightness(1.12);
+}
+
+html[data-ui-theme="win-xp"] .dock-close,
+html[data-ui-theme="win-xp"] .icon-btn.close,
+html[data-ui-theme="win-xp"] .mode-close,
+html[data-ui-theme="win-xp"] #btn-settings-back,
+html[data-ui-theme="win-xp"] #btn-close-shortcuts {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0 !important;
+  line-height: 1 !important;
+  background: linear-gradient(180deg, #ff7b6b 0%, #e04343 55%, #b92020 100%) !important;
+  color: #ffffff !important;
+  border: 1px solid #7d0e0e !important;
+  border-radius: 3px !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55) !important;
+  font-weight: 700 !important;
+}
+
+html[data-ui-theme="win-xp"] #btn-settings-back,
+html[data-ui-theme="win-xp"] #btn-close-shortcuts {
+  width: 24px !important;
+  height: 24px !important;
+}
+
+/* XP Classic Surfaces (#ECE9D8 with Luna Blue Top Border) — covers all .glass panels & submenus */
+html[data-ui-theme="win-xp"] .glass:not(.dock-bar),
+html[data-ui-theme="win-xp"] .bottom-capsule,
+html[data-ui-theme="win-xp"] .vertical-toolbar,
+html[data-ui-theme="win-xp"] .photo-tabs-bar,
+html[data-ui-theme="win-xp"] .layers-panel,
+html[data-ui-theme="win-xp"] .phone-share-panel,
+html[data-ui-theme="win-xp"] .recording-capsule,
+html[data-ui-theme="win-xp"] .settings-card,
+html[data-ui-theme="win-xp"] .mode-bar,
+html[data-ui-theme="win-xp"] .picker-panel,
+html[data-ui-theme="win-xp"] .lang-menu,
+html[data-ui-theme="win-xp"] .emoji-popover,
+html[data-ui-theme="win-xp"] .shape-popover,
+html[data-ui-theme="win-xp"] .size-popover,
+html[data-ui-theme="win-xp"] .text-toolbar,
+html[data-ui-theme="win-xp"] .ocr-panel {
+  background: #ece9d8 !important;
+  color: #111111 !important;
+  border: 2px solid #0055ea !important;
+  border-top: 5px solid #0055ea !important;
+  border-radius: 6px !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  box-shadow: inset 1px 1px 0 #ffffff, inset -1px -1px 0 #aca899, 0 6px 16px rgba(0, 0, 0, 0.38) !important;
+}
+
+html[data-ui-theme="win-xp"] .settings-header,
+html[data-ui-theme="win-xp"] .layers-header,
+html[data-ui-theme="win-xp"] .ocr-header,
+html[data-ui-theme="win-xp"] .picker-title {
+  background: linear-gradient(180deg, #0967f7 0%, #0050d6 85%, #003da8 100%) !important;
+  color: #ffffff !important;
+  padding: 6px 10px !important;
+  border-radius: 3px !important;
+  font-weight: 700 !important;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.55);
+}
+
+/* XP 3D Beveled Buttons, Submenu Options & Cards */
+html[data-ui-theme="win-xp"] .btn,
+html[data-ui-theme="win-xp"] .tool-btn,
+html[data-ui-theme="win-xp"] .layer-btn:not(#btn-settings-back):not(#btn-close-shortcuts),
+html[data-ui-theme="win-xp"] .icon-btn:not(.close),
+html[data-ui-theme="win-xp"] .zoom-btn,
+html[data-ui-theme="win-xp"] .zoom-label,
+html[data-ui-theme="win-xp"] .preset-pill,
+html[data-ui-theme="win-xp"] .photo-tab,
+html[data-ui-theme="win-xp"] .photo-tab-add,
+html[data-ui-theme="win-xp"] .mode-btn,
+html[data-ui-theme="win-xp"] .ui-theme-card,
+html[data-ui-theme="win-xp"] .shortcut-key-btn,
+html[data-ui-theme="win-xp"] .lang-option,
+html[data-ui-theme="win-xp"] .shape-opt,
+html[data-ui-theme="win-xp"] .emoji-opt,
+html[data-ui-theme="win-xp"] .ocr-seg-btn,
+html[data-ui-theme="win-xp"] .text-font-select {
+  background: linear-gradient(180deg, #ffffff 0%, #f0ede0 85%, #dedac8 100%) !important;
+  color: #111111 !important;
+  border: 1px solid #7f9db9 !important;
+  border-radius: 3px !important;
+  box-shadow: inset 0 1px 0 #ffffff !important;
+}
+
+html[data-ui-theme="win-xp"] .btn:hover,
+html[data-ui-theme="win-xp"] .tool-btn:hover,
+html[data-ui-theme="win-xp"] .mode-btn:hover,
+html[data-ui-theme="win-xp"] .ui-theme-card:hover,
+html[data-ui-theme="win-xp"] .preset-pill:hover,
+html[data-ui-theme="win-xp"] .shape-opt:hover,
+html[data-ui-theme="win-xp"] .emoji-opt:hover,
+html[data-ui-theme="win-xp"] .ocr-seg-btn:hover {
+  border-color: #e59700 !important;
+  box-shadow: inset 0 0 0 1px #ffc73c !important;
+}
+
+html[data-ui-theme="win-xp"] .tool-btn.active,
+html[data-ui-theme="win-xp"] .icon-btn.active,
+html[data-ui-theme="win-xp"] .preset-pill.primary-pill,
+html[data-ui-theme="win-xp"] .preset-pill.active,
+html[data-ui-theme="win-xp"] .photo-tab.active,
+html[data-ui-theme="win-xp"] .mode-btn.active,
+html[data-ui-theme="win-xp"] .ui-theme-card.active,
+html[data-ui-theme="win-xp"] .lang-option.active,
+html[data-ui-theme="win-xp"] .shape-opt.active,
+html[data-ui-theme="win-xp"] .ocr-seg-btn.active {
+  background: linear-gradient(180deg, #316ac5 0%, #1d52a8 100%) !important;
+  color: #ffffff !important;
+  border-color: #082972 !important;
+}
+
+html[data-ui-theme="win-xp"] .size-badge,
+html[data-ui-theme="win-xp"] .ocr-textarea {
+  color: #111111 !important;
+}
+html[data-ui-theme="win-xp"] .text-font-select option {
+  background: #ffffff !important;
+  color: #111111 !important;
+}
+html[data-ui-theme="win-xp"] .ocr-textarea {
+  background: #ffffff !important;
+  border: 1px solid #7f9db9 !important;
+}
+
+html[data-ui-theme="win-xp"] .btn.primary {
+  background: linear-gradient(180deg, #65d846 0%, #3c9e26 60%, #2d821a 100%) !important;
+  color: #ffffff !important;
+  border: 1px solid #1e5f10 !important;
+  font-weight: 700 !important;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.45);
+}
+
+html[data-ui-theme="win-xp"] .phone-split-btn {
+  border: 1px solid #7f9db9 !important;
+  border-radius: 3px !important;
+  background: #f0ede0 !important;
+}
+
+/* XP Switch & Range Slider — perfectly centered 2px inset on all 4 sides */
+html[data-ui-theme="win-xp"] .glass-slider {
+  background: #d4d0c8 !important;
+  border: 1px solid #7f9db9 !important;
+  border-radius: 3px !important;
+}
+html[data-ui-theme="win-xp"] .glass-slider::before {
+  top: 2px !important;
+  left: 2px !important;
+  width: 18px !important;
+  height: 18px !important;
+  box-sizing: border-box !important;
+  background: #ffffff !important;
+  border: 1px solid #003c74 !important;
+  border-radius: 2px !important;
+}
+html[data-ui-theme="win-xp"] .glass-switch input:checked + .glass-slider {
+  background: #3c9e26 !important;
+  border-color: #1e5f10 !important;
+}
+html[data-ui-theme="win-xp"] .glass-switch input:checked + .glass-slider::before {
+  transform: translateX(18px) !important;
+}
+
+html[data-ui-theme="win-xp"] .tool-btn,
+html[data-ui-theme="win-xp"] .icon-btn,
+html[data-ui-theme="win-xp"] .layer-btn,
+html[data-ui-theme="win-xp"] .zoom-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0 !important;
+  line-height: 1 !important;
+}
+
+html[data-ui-theme="win-xp"] .dim-badge,
+html[data-ui-theme="win-xp"] .bottom-capsule .drag-grip,
+html[data-ui-theme="win-xp"] .settings-label strong,
+html[data-ui-theme="win-xp"] .settings-label span,
+html[data-ui-theme="win-xp"] .shortcut-item span,
+html[data-ui-theme="win-xp"] .layer-item {
+  color: #111111 !important;
+}
+
+/* XP Classic Yellow Tooltip for Overlay Size Label & Toast */
+html[data-ui-theme="win-xp"] .size-label,
+html[data-ui-theme="win-xp"] .toast {
+  background: #ffffe1 !important;
+  color: #000000 !important;
+  border: 1px solid #000000 !important;
+  border-radius: 2px !important;
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.35) !important;
+  backdrop-filter: none !important;
+}
+
+/* ==========================================================================
+   THEME 3: MINECRAFT (16-BIT INVENTORY & HOTBAR GUI)
+   ========================================================================== */
+html[data-ui-theme="minecraft"] {
+  --accent: #17dd62;
+  --accent-hover: #2ef577;
+  --danger: #e02e2e;
+  --success: #17dd62;
+  --radius-pill: 0px;
+  --radius-lg: 0px;
+  --radius-md: 0px;
+  --radius-sm: 0px;
+  --text-primary: #222222;
+  --text-secondary: #3f3f3f;
+  --transition: 0ms steps(1);
+  --spring: 70ms steps(2, end);
+  font-family: "Courier New", Consolas, monospace !important;
+  image-rendering: pixelated;
+}
+
+/* ---- Minecraft Authentic 16-Bit Stepped Animations (Frame-by-Frame Pixel Motion & Inverted Stone Bevel Click) ---- */
+@keyframes mcGuiPop {
+  0% {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.02);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes mcEnchantPulse {
+  0%, 100% {
+    box-shadow: inset -2px -2px 0 #0e5c26, inset 2px 2px 0 #5df28b !important;
+  }
+  50% {
+    box-shadow: inset -2px -2px 0 #18873a, inset 2px 2px 0 #9effb8, 0 0 0 2px #a855f7 !important;
+  }
+}
+
+@keyframes mcTooltipBob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-2px); }
+}
+
+html[data-ui-theme="minecraft"] .toolbar-wrap,
+html[data-ui-theme="minecraft"] .settings-card,
+html[data-ui-theme="minecraft"] .layers-panel,
+html[data-ui-theme="minecraft"] .phone-share-panel,
+html[data-ui-theme="minecraft"] .lang-menu,
+html[data-ui-theme="minecraft"] .emoji-popover,
+html[data-ui-theme="minecraft"] .shape-popover,
+html[data-ui-theme="minecraft"] .size-popover,
+html[data-ui-theme="minecraft"] .text-toolbar,
+html[data-ui-theme="minecraft"] .ocr-panel,
+html[data-ui-theme="minecraft"] .picker-panel {
+  animation: mcGuiPop 110ms steps(2, end) !important;
+}
+
+/* Disable Liquid Glass specular sweep in Minecraft */
+html[data-ui-theme="minecraft"] .settings-view .btn::after,
+html[data-ui-theme="minecraft"] .settings-view .preset-pill::after,
+html[data-ui-theme="minecraft"] .glass::before {
+  display: none !important;
+}
+
+/* Minecraft instantaneous stepped slot transitions (zero smooth easing) */
+html[data-ui-theme="minecraft"] .btn,
+html[data-ui-theme="minecraft"] .tool-btn,
+html[data-ui-theme="minecraft"] .icon-btn,
+html[data-ui-theme="minecraft"] .layer-btn,
+html[data-ui-theme="minecraft"] .zoom-btn,
+html[data-ui-theme="minecraft"] .zoom-label,
+html[data-ui-theme="minecraft"] .preset-pill,
+html[data-ui-theme="minecraft"] .photo-tab,
+html[data-ui-theme="minecraft"] .photo-tab-add,
+html[data-ui-theme="minecraft"] .mode-btn,
+html[data-ui-theme="minecraft"] .dock-item,
+html[data-ui-theme="minecraft"] .dock-close,
+html[data-ui-theme="minecraft"] .ui-theme-card {
+  transition: transform 60ms steps(2, end), background 0ms, border-color 0ms, box-shadow 0ms !important;
+}
+
+/* Hover: crisp 2px pixel step up (no smooth scale) */
+html[data-ui-theme="minecraft"] .btn:hover:not(:disabled),
+html[data-ui-theme="minecraft"] .tool-btn:hover:not(:disabled),
+html[data-ui-theme="minecraft"] .icon-btn:hover:not(:disabled),
+html[data-ui-theme="minecraft"] .layer-btn:hover:not(:disabled),
+html[data-ui-theme="minecraft"] .zoom-btn:hover:not(:disabled),
+html[data-ui-theme="minecraft"] .preset-pill:hover:not(:disabled),
+html[data-ui-theme="minecraft"] .mode-btn:hover:not(:disabled),
+html[data-ui-theme="minecraft"] .dock-item:hover:not(:disabled),
+html[data-ui-theme="minecraft"] .dock-close:hover:not(:disabled),
+html[data-ui-theme="minecraft"] .ui-theme-card:hover:not(:disabled) {
+  transform: translateY(-2px) !important;
+}
+
+/* Click (:active): Stone button pushes 2px down with inverted 3D bevel */
+html[data-ui-theme="minecraft"] .btn:active:not(:disabled),
+html[data-ui-theme="minecraft"] .tool-btn:active:not(:disabled),
+html[data-ui-theme="minecraft"] .icon-btn:active:not(:disabled),
+html[data-ui-theme="minecraft"] .layer-btn:active:not(:disabled),
+html[data-ui-theme="minecraft"] .zoom-btn:active:not(:disabled),
+html[data-ui-theme="minecraft"] .preset-pill:active:not(:disabled),
+html[data-ui-theme="minecraft"] .mode-btn:active:not(:disabled),
+html[data-ui-theme="minecraft"] .dock-item:active:not(:disabled),
+html[data-ui-theme="minecraft"] .dock-close:active:not(:disabled),
+html[data-ui-theme="minecraft"] .ui-theme-card:active:not(:disabled) {
+  transform: translateY(2px) !important;
+  background: #6d6d6d !important;
+  box-shadow: inset 2px 2px 0 #2b2b2b, inset -2px -2px 0 #a8a8a8 !important;
+}
+
+/* Minecraft Lever snap on toggle switches (2-step pixel snap, no rubber stretch) */
+html[data-ui-theme="minecraft"] .glass-slider,
+html[data-ui-theme="minecraft"] .glass-slider::before {
+  transition: transform 60ms steps(2, end), background 0ms !important;
+}
+html[data-ui-theme="minecraft"] .settings-view .glass-switch input:active + .glass-slider::before {
+  transform: translateX(0) !important;
+}
+html[data-ui-theme="minecraft"] .settings-view .glass-switch input:checked:active + .glass-slider::before {
+  transform: translateX(18px) !important;
+}
+
+/* Stepped pixel bob on Minecraft Enchanted Tooltip Toast */
+html[data-ui-theme="minecraft"] .toast.visible {
+  animation: mcTooltipBob 1.4s steps(2, end) infinite !important;
+}
+
+html[data-ui-theme="minecraft"] body,
+html[data-ui-theme="minecraft"] button,
+html[data-ui-theme="minecraft"] input {
+  font-family: "Courier New", Consolas, monospace !important;
+  letter-spacing: -0.02em;
+}
+
+/* Hide Liquid Glass animated blobs in Minecraft mode */
+html[data-ui-theme="minecraft"] .liquid-blob,
+html[data-ui-theme="minecraft"] .overlay-liquid-blob {
+  display: none !important;
+}
+
+/* Minecraft Hotbar & Inventory Containers — covers all .glass panels & submenus */
+html[data-ui-theme="minecraft"] .glass:not(.dock-bar),
+html[data-ui-theme="minecraft"] .dock-bar,
+html[data-ui-theme="minecraft"] .bottom-capsule,
+html[data-ui-theme="minecraft"] .vertical-toolbar,
+html[data-ui-theme="minecraft"] .photo-tabs-bar,
+html[data-ui-theme="minecraft"] .layers-panel,
+html[data-ui-theme="minecraft"] .phone-share-panel,
+html[data-ui-theme="minecraft"] .recording-capsule,
+html[data-ui-theme="minecraft"] .settings-card,
+html[data-ui-theme="minecraft"] .mode-bar,
+html[data-ui-theme="minecraft"] .picker-panel,
+html[data-ui-theme="minecraft"] .lang-menu,
+html[data-ui-theme="minecraft"] .emoji-popover,
+html[data-ui-theme="minecraft"] .shape-popover,
+html[data-ui-theme="minecraft"] .size-popover,
+html[data-ui-theme="minecraft"] .text-toolbar,
+html[data-ui-theme="minecraft"] .ocr-panel {
+  background: #c6c6c6 !important;
+  color: #222222 !important;
+  border: 3px solid #000000 !important;
+  border-radius: 0 !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  box-shadow: inset -3px -3px 0 #555555, inset 3px 3px 0 #ffffff !important;
+}
+
+/* Minecraft Dark Stone Hotbar for the Welcome Dock */
+html[data-ui-theme="minecraft"] .dock-bar {
+  background: #4a4a4a !important;
+  box-shadow: inset -3px -3px 0 #262626, inset 3px 3px 0 #7a7a7a !important;
+}
+
+html[data-ui-theme="minecraft"] .dock-bar .drag-grip {
+  color: #ffffff !important;
+}
+
+/* Minecraft Stone Inventory Slots for Buttons, Submenu Options & Cards */
+html[data-ui-theme="minecraft"] .dock-item,
+html[data-ui-theme="minecraft"] .btn,
+html[data-ui-theme="minecraft"] .tool-btn,
+html[data-ui-theme="minecraft"] .layer-btn,
+html[data-ui-theme="minecraft"] .icon-btn,
+html[data-ui-theme="minecraft"] .zoom-btn,
+html[data-ui-theme="minecraft"] .zoom-label,
+html[data-ui-theme="minecraft"] .preset-pill,
+html[data-ui-theme="minecraft"] .photo-tab,
+html[data-ui-theme="minecraft"] .photo-tab-add,
+html[data-ui-theme="minecraft"] .mode-btn,
+html[data-ui-theme="minecraft"] .ui-theme-card,
+html[data-ui-theme="minecraft"] .shortcut-key-btn,
+html[data-ui-theme="minecraft"] .lang-option,
+html[data-ui-theme="minecraft"] .shape-opt,
+html[data-ui-theme="minecraft"] .emoji-opt,
+html[data-ui-theme="minecraft"] .ocr-seg-btn,
+html[data-ui-theme="minecraft"] .text-font-select {
+  background: #8b8b8b !important;
+  color: #ffffff !important;
+  text-shadow: 1px 1px 0 #2b2b2b !important;
+  border: 2px solid #000000 !important;
+  border-radius: 0 !important;
+  box-shadow: inset -2px -2px 0 #373737, inset 2px 2px 0 #c6c6c6 !important;
+  font-weight: 700 !important;
+}
+
+html[data-ui-theme="minecraft"] .dock-item:hover,
+html[data-ui-theme="minecraft"] .btn:hover,
+html[data-ui-theme="minecraft"] .tool-btn:hover,
+html[data-ui-theme="minecraft"] .mode-btn:hover,
+html[data-ui-theme="minecraft"] .ui-theme-card:hover,
+html[data-ui-theme="minecraft"] .preset-pill:hover,
+html[data-ui-theme="minecraft"] .shape-opt:hover,
+html[data-ui-theme="minecraft"] .emoji-opt:hover,
+html[data-ui-theme="minecraft"] .ocr-seg-btn:hover {
+  background: #a0a0a0 !important;
+  border-color: #ffffff !important;
+}
+
+/* Selected Hotbar Slot / Active Tool & Primary Emerald Button */
+html[data-ui-theme="minecraft"] .dock-item.active,
+html[data-ui-theme="minecraft"] .tool-btn.active,
+html[data-ui-theme="minecraft"] .icon-btn.active,
+html[data-ui-theme="minecraft"] .preset-pill.primary-pill,
+html[data-ui-theme="minecraft"] .preset-pill.active,
+html[data-ui-theme="minecraft"] .photo-tab.active,
+html[data-ui-theme="minecraft"] .mode-btn.active,
+html[data-ui-theme="minecraft"] .ui-theme-card.active,
+html[data-ui-theme="minecraft"] .lang-option.active,
+html[data-ui-theme="minecraft"] .shape-opt.active,
+html[data-ui-theme="minecraft"] .ocr-seg-btn.active,
+html[data-ui-theme="minecraft"] .btn.primary {
+  background: #1ea84a !important;
+  color: #ffffff !important;
+  border: 2px solid #ffffff !important;
+  box-shadow: inset -2px -2px 0 #0e5c26, inset 2px 2px 0 #5df28b !important;
+}
+
+html[data-ui-theme="minecraft"] .size-badge,
+html[data-ui-theme="minecraft"] .ocr-header {
+  color: #222222 !important;
+  font-weight: 700 !important;
+}
+html[data-ui-theme="minecraft"] .text-font-select option {
+  background: #373737 !important;
+  color: #ffffff !important;
+}
+html[data-ui-theme="minecraft"] .ocr-textarea {
+  background: #373737 !important;
+  color: #ffffff !important;
+  border: 2px solid #000000 !important;
+  border-radius: 0 !important;
+}
+
+/* Redstone Close Buttons */
+html[data-ui-theme="minecraft"] .dock-close,
+html[data-ui-theme="minecraft"] .icon-btn.close,
+html[data-ui-theme="minecraft"] .mode-close,
+html[data-ui-theme="minecraft"] #btn-settings-back,
+html[data-ui-theme="minecraft"] #btn-close-shortcuts {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0 !important;
+  line-height: 1 !important;
+  background: #b82525 !important;
+  color: #ffffff !important;
+  border: 2px solid #000000 !important;
+  border-radius: 0 !important;
+  box-shadow: inset -2px -2px 0 #661010, inset 2px 2px 0 #f25d5d !important;
+}
+
+html[data-ui-theme="minecraft"] #btn-settings-back,
+html[data-ui-theme="minecraft"] #btn-close-shortcuts {
+  width: 24px !important;
+  height: 24px !important;
+}
+
+html[data-ui-theme="minecraft"] .phone-split-btn {
+  border: 2px solid #000000 !important;
+  border-radius: 0 !important;
+  background: #8b8b8b !important;
+}
+
+/* Keep Minecraft top action bar on a single line even with "Tout enregistrer (N)" */
+html[data-ui-theme="minecraft"] .top-action-wrap {
+  padding: 8px 6px 2px !important;
+}
+html[data-ui-theme="minecraft"] .top-action-wrap .bottom-capsule {
+  gap: 3px !important;
+  padding: 4px 6px !important;
+}
+html[data-ui-theme="minecraft"] .top-action-wrap .btn {
+  padding: 4px 6px !important;
+  font-size: 10.5px !important;
+  letter-spacing: -0.05em !important;
+}
+html[data-ui-theme="minecraft"] .top-action-wrap .dim-badge,
+html[data-ui-theme="minecraft"] .top-action-wrap .zoom-label {
+  font-size: 10.5px !important;
+  padding-inline: 4px !important;
+}
+html[data-ui-theme="minecraft"] .top-action-wrap .divider {
+  margin-inline: 1px !important;
+}
+
+/* Minecraft Lever/Switch & Slider — perfectly centered 2px inset on all 4 sides */
+html[data-ui-theme="minecraft"] .glass-slider {
+  background: #555555 !important;
+  border: 2px solid #000000 !important;
+  border-radius: 0 !important;
+}
+html[data-ui-theme="minecraft"] .glass-slider::before {
+  top: 2px !important;
+  left: 2px !important;
+  width: 16px !important;
+  height: 16px !important;
+  box-sizing: border-box !important;
+  background: #c6c6c6 !important;
+  border: 2px solid #000000 !important;
+  border-radius: 0 !important;
+}
+html[data-ui-theme="minecraft"] .glass-switch input:checked + .glass-slider {
+  background: #1ea84a !important;
+}
+html[data-ui-theme="minecraft"] .glass-switch input:checked + .glass-slider::before {
+  transform: translateX(18px) !important;
+}
+
+html[data-ui-theme="minecraft"] .tool-btn,
+html[data-ui-theme="minecraft"] .icon-btn,
+html[data-ui-theme="minecraft"] .layer-btn,
+html[data-ui-theme="minecraft"] .zoom-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0 !important;
+  line-height: 1 !important;
+}
+
+html[data-ui-theme="minecraft"] .dim-badge,
+html[data-ui-theme="minecraft"] .bottom-capsule .drag-grip,
+html[data-ui-theme="minecraft"] .settings-header,
+html[data-ui-theme="minecraft"] .layers-header,
+html[data-ui-theme="minecraft"] .settings-label strong,
+html[data-ui-theme="minecraft"] .settings-label span,
+html[data-ui-theme="minecraft"] .shortcut-item span,
+html[data-ui-theme="minecraft"] .layer-item {
+  color: #222222 !important;
+  font-weight: 700 !important;
+}
+
+/* Enchanted Item Tooltip for Overlay Size Label & Toast */
+html[data-ui-theme="minecraft"] .size-label,
+html[data-ui-theme="minecraft"] .toast {
+  background: #100010 !important;
+  color: #fcfcfc !important;
+  border: 2px solid #5000ff !important;
+  border-radius: 0 !important;
+  box-shadow: 0 0 0 2px #100010, 4px 4px 0 rgba(0, 0, 0, 0.65) !important;
+  text-shadow: 1px 1px 0 #3f3f3f !important;
+  backdrop-filter: none !important;
+}
